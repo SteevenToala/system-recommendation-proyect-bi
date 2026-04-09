@@ -47,34 +47,34 @@ def kmeans_manual(variables: np.ndarray, cantidad_clusters: int, cantidad_iterac
     np.random.seed(semilla_aleatoria)
     cantidad_muestras, cantidad_caracteristicas = variables.shape
     
-    # 1. Inicializar centroides aleatoriamente seleccionando puntos del dataset
+   
     indices_iniciales = np.random.choice(cantidad_muestras, cantidad_clusters, replace=False)
     centroides = variables[indices_iniciales].copy()
     
     historial_centroides = [centroides.copy()]
     
     for iteracion in range(cantidad_iteraciones_maximas):
-        # 2. Calcular distancia euclidiana de cada punto a cada centroide
+        
         distancias = np.zeros((cantidad_muestras, cantidad_clusters))
         for indice_cluster in range(cantidad_clusters):
             distancias[:, indice_cluster] = np.sqrt(np.sum((variables - centroides[indice_cluster]) ** 2, axis=1))
         
-        # 3. Asignar cada punto al cluster del centroide más cercano
+        
         asignaciones = np.argmin(distancias, axis=1)
         
-        # 4. Calcular nuevos centroides como promedio de puntos en cada cluster
+        
         centroides_nuevos = np.zeros_like(centroides)
         for indice_cluster in range(cantidad_clusters):
             puntos_cluster = variables[asignaciones == indice_cluster]
             if len(puntos_cluster) > 0:
                 centroides_nuevos[indice_cluster] = np.mean(puntos_cluster, axis=0)
             else:
-                # Si un cluster quedó vacío, reinicializar con punto aleatorio
+                
                 centroides_nuevos[indice_cluster] = variables[np.random.choice(cantidad_muestras)]
         
         historial_centroides.append(centroides_nuevos.copy())
         
-        # 5. Verificar convergencia: centroides no cambiaron significativamente
+        
         cambio = np.sum(np.sqrt(np.sum((centroides_nuevos - centroides) ** 2, axis=1)))
         centroides = centroides_nuevos
         
@@ -144,7 +144,7 @@ def etiquetar_segmentos(resumen: pd.DataFrame) -> pd.DataFrame:
     resultado = resumen.copy()
     cantidad_grupos = len(resultado)
 
-    # Se usa rank(method="first") para forzar orden único y evitar descripciones repetidas.
+    
     resultado["rango_alquileres"] = resultado["alquileres_promedio"].rank(method="first", ascending=True).astype(int)
     resultado["rango_ingreso"] = resultado["ingreso_total_promedio"].rank(method="first", ascending=True).astype(int)
 
@@ -197,8 +197,8 @@ def etiquetar_segmentos(resumen: pd.DataFrame) -> pd.DataFrame:
         promedio_ingreso_total = float(fila["ingreso_total_promedio"])
         ingreso_por_alquiler = promedio_ingreso_total / promedio_alquileres if promedio_alquileres > 0 else 0.0
 
-        # Etiqueta simple: evita nombres confusos.
-        letra = chr(65 + int(fila["cluster"]))  # A, B, C...
+       
+        letra = chr(65 + int(fila["cluster"])) 
         segmento = f"Grupo {letra}"
         explicacion = (
             f"Perfil: {descripcion_alquileres}, {descripcion_ingreso}. "
