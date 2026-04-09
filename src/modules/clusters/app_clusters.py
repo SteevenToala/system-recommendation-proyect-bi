@@ -38,7 +38,7 @@ class AppClusters:
 
         ttk.Label(top, text="Numero de clusters:").pack(side=tk.LEFT)
         self.entry_k = ttk.Entry(top, width=8)
-        self.entry_k.insert(0, "3")
+        self.entry_k.insert(0, "2")
         self.entry_k.pack(side=tk.LEFT, padx=(6, 12))
 
         ttk.Button(top, text="Calcular clusters", command=self._calcular_y_graficar).pack(side=tk.LEFT)
@@ -98,6 +98,7 @@ class AppClusters:
                 raise ValueError("No se obtuvieron datos de clusters.")
 
             self.df_resumen = resumen_clusters_explicado(self.df_clusters)
+            self._imprimir_por_consola()
 
             self._pintar_tabla()
             self._pintar_graficos()
@@ -106,6 +107,29 @@ class AppClusters:
         except Exception as exc:
             messagebox.showerror("Error", str(exc))
             self.lbl_estado.config(text="No se pudieron calcular clusters.")
+
+    def _imprimir_por_consola(self) -> None:
+        if self.df_clusters is None or self.df_clusters.empty:
+            print("No hay clusters para imprimir.")
+            return
+
+        print("=== RESUMEN DE CLUSTERS ===")
+        print(self.df_resumen.to_string(index=False))
+        print("\n=== DETALLE DE CLIENTES CLASIFICADOS ===")
+        columnas_impresion = [
+            columna
+            for columna in [
+                "cliente_ref",
+                "cluster",
+                "total_alquileres",
+                "peliculas_unicas",
+                "categorias_unicas",
+                "ingreso_promedio",
+                "ingreso_total",
+            ]
+            if columna in self.df_clusters.columns
+        ]
+        print(self.df_clusters[columnas_impresion].to_string(index=False))
 
     def _pintar_tabla(self) -> None:
         self.tree.delete(*self.tree.get_children())

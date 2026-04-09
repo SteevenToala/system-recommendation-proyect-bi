@@ -143,22 +143,41 @@ def etiquetar_segmentos(resumen: pd.DataFrame) -> pd.DataFrame:
         return resumen
 
     resultado = resumen.copy()
-    resultado["rango_alquileres"] = resultado["alquileres_promedio"].rank(method="dense", ascending=True)
-    resultado["rango_ingreso"] = resultado["ingreso_total_promedio"].rank(method="dense", ascending=True)
-    maximo_alquileres = float(resultado["rango_alquileres"].max())
-    maximo_ingreso = float(resultado["rango_ingreso"].max())
+    cantidad_grupos = len(resultado)
+
+    # Se usa rank(method="first") para forzar orden único y evitar descripciones repetidas.
+    resultado["rango_alquileres"] = resultado["alquileres_promedio"].rank(method="first", ascending=True).astype(int)
+    resultado["rango_ingreso"] = resultado["ingreso_total_promedio"].rank(method="first", ascending=True).astype(int)
+
+    def obtener_nivel_por_posicion(posicion: int, total: int) -> str:
+        if total <= 1:
+            return "medio"
+        porcentaje = (posicion - 1) / (total - 1)
+        if porcentaje <= 0.2:
+            return "muy bajo"
+        if porcentaje <= 0.4:
+            return "bajo"
+        if porcentaje <= 0.6:
+            return "medio"
+        if porcentaje <= 0.8:
+            return "alto"
+        return "muy alto"
 
     segmentos = []
     explicaciones = []
     for _, fila in resultado.iterrows():
-        nivel_alquileres = "alto" if fila["rango_alquileres"] >= maximo_alquileres * 0.66 else ("medio" if fila["rango_alquileres"] >= maximo_alquileres * 0.33 else "bajo")
-        nivel_ingreso = "alto" if fila["rango_ingreso"] >= maximo_ingreso * 0.66 else ("medio" if fila["rango_ingreso"] >= maximo_ingreso * 0.33 else "bajo")
+        posicion_alquileres = int(fila["rango_alquileres"])
+        posicion_ingreso = int(fila["rango_ingreso"])
+        nivel_alquileres = obtener_nivel_por_posicion(posicion_alquileres, cantidad_grupos)
+        nivel_ingreso = obtener_nivel_por_posicion(posicion_ingreso, cantidad_grupos)
 
         # Etiqueta simple: evita nombres confusos.
         letra = chr(65 + int(fila["cluster"]))  # A, B, C...
         segmento = f"Grupo {letra}"
         explicacion = (
             f"Perfil del grupo: alquileres {nivel_alquileres} y gasto total {nivel_ingreso}. "
+            f"Posicion en alquileres: {posicion_alquileres}/{cantidad_grupos}; "
+            f"posicion en gasto: {posicion_ingreso}/{cantidad_grupos}. "
             f"Promedios -> alquileres: {float(fila['alquileres_promedio']):.2f}, "
             f"ingreso total: {float(fila['ingreso_total_promedio']):.2f}."
         )

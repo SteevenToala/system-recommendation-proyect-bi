@@ -100,3 +100,26 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
         "df_peliculas": df_peliculas,
         "df_clientes": df_clientes,
     }
+
+
+def imprimir_resumen_consultas() -> None:
+    """Imprime por consola un resumen simple de los datos cargados desde Mongo."""
+    datos = cargar_dataframes_desde_consultas()
+
+    print("=== RESUMEN DE CONSULTAS MONGO ===")
+    for nombre, datos_frame in datos.items():
+        print(f"\n[{nombre}]")
+        print(f"Filas: {len(datos_frame)} | Columnas: {len(datos_frame.columns)}")
+        if datos_frame.empty:
+            print("DataFrame vacio.")
+            continue
+        print(datos_frame.head(5).to_string(index=False))
+
+
+def main() -> None:
+    """Permite ejecutar este archivo directamente para ver las consultas por consola."""
+    imprimir_resumen_consultas()
+
+
+if __name__ == "__main__":
+    main()
