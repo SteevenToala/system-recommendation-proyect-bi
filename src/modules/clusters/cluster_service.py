@@ -82,7 +82,7 @@ def kmeans_manual(variables: np.ndarray, cantidad_clusters: int, cantidad_iterac
             print(f"  KMeans convergió en iteración {iteracion + 1}")
             break
     
-    # Realizar asignación final
+
     distancias = np.zeros((cantidad_muestras, cantidad_clusters))
     for indice_cluster in range(cantidad_clusters):
         distancias[:, indice_cluster] = np.sqrt(np.sum((variables - centroides[indice_cluster]) ** 2, axis=1))
