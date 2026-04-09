@@ -10,10 +10,10 @@ from pymongo import MongoClient
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 RUTA_EXCEL = BASE_DIR / 'BI-FINAL.xlsx'
-RUTA_JSON = BASE_DIR / 'fact_alquiler_proyecto.json'
+RUTA_JSON = BASE_DIR / 'alquileres.json'
 MONGO_URI = 'mongodb://localhost:27017/'
 DB_NAME = 'BI_Final'
-COLLECTION_NAME = 'fact_alquiler'
+COLLECTION_NAME = 'alquileres'
 
 COLUMNAS_FACT_NUMERICAS = [
     'id_hecho', 'id_tiempo', 'id_cliente', 'id_pelicula', 'id_tienda',

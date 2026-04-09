@@ -8,7 +8,7 @@ from pymongo import MongoClient
 
 MONGO_URI = "mongodb://localhost:27017/"
 DB_NAME = "BI_Final"
-COLLECTION_NAME = "fact_alquiler"
+COLLECTION_NAME = "alquileres"
 
 
 def _to_dataframe(registros: list[dict]) -> pd.DataFrame:
