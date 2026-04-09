@@ -6,13 +6,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def _peliculas_vistas(df: pd.DataFrame, cliente_id: str) -> set[str]:
-    return set(df.loc[df["cliente_ref"] == cliente_id, "pelicula_ref"].astype(str).tolist())
+def _peliculas_vistas(datos_frame: pd.DataFrame, cliente_id: str) -> set[str]:
+    return set(datos_frame.loc[datos_frame["cliente_ref"] == cliente_id, "pelicula_ref"].astype(str).tolist())
 
 
-def _metadata_peliculas(df: pd.DataFrame) -> pd.DataFrame:
+def _metadata_peliculas(datos_frame: pd.DataFrame) -> pd.DataFrame:
     return (
-        df.groupby("pelicula_ref", as_index=False)
+        datos_frame.groupby("pelicula_ref", as_index=False)
         .agg(
             pelicula_titulo=("pelicula_titulo", "first"),
             categoria_nombre=("categoria_nombre", "first"),
@@ -22,179 +22,179 @@ def _metadata_peliculas(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def recomendar_item_item_binario(
-    df: pd.DataFrame,
-    matriz_bin: pd.DataFrame,
+    datos_frame: pd.DataFrame,
+    matriz_binaria: pd.DataFrame,
     cliente_id: str,
-    n: int = 10,
-    k: int = 5,
+    cantidad_recomendaciones: int = 10,
+    cantidad_vecinos: int = 5,
 ) -> pd.DataFrame:
     """
     Item-item con datos 0/1.
     sim(x,y)=sum_u(r_u,x*r_u,y)/sqrt(sum_u(r_u,x^2)*sum_u(r_u,y^2))
     Pred(x)=promedio de similitudes con peliculas vistas.
     """
-    if cliente_id not in matriz_bin.index:
+    if cliente_id not in matriz_binaria.index:
         raise ValueError("Cliente no encontrado en matriz binaria.")
 
-    items_vistos = matriz_bin.loc[cliente_id]
-    items_vistos = items_vistos[items_vistos > 0].index.astype(str).tolist()
-    if not items_vistos:
+    peliculas_vistas = matriz_binaria.loc[cliente_id]
+    peliculas_vistas = peliculas_vistas[peliculas_vistas > 0].index.astype(str).tolist()
+    if not peliculas_vistas:
         raise ValueError("El cliente no tiene historial para item-item.")
 
-    items_matrix = matriz_bin.T
-    candidatos = [c for c in items_matrix.index.astype(str) if c not in items_vistos]
-    if not candidatos:
+    matriz_peliculas = matriz_binaria.T
+    peliculas_candidatas = [pelicula for pelicula in matriz_peliculas.index.astype(str) if pelicula not in peliculas_vistas]
+    if not peliculas_candidatas:
         raise ValueError("No hay peliculas candidatas para recomendar.")
 
-    seen_mat = items_matrix.loc[items_vistos].to_numpy(dtype=float)
-    cand_mat = items_matrix.loc[candidatos].to_numpy(dtype=float)
+    matriz_vistas = matriz_peliculas.loc[peliculas_vistas].to_numpy(dtype=float)
+    matriz_candidatos = matriz_peliculas.loc[peliculas_candidatas].to_numpy(dtype=float)
 
-    seen_norms = np.linalg.norm(seen_mat, axis=1)
-    cand_norms = np.linalg.norm(cand_mat, axis=1)
-    denom = np.outer(cand_norms, seen_norms)
-    sim_matrix = cand_mat @ seen_mat.T
+    normas_vistas = np.linalg.norm(matriz_vistas, axis=1)
+    normas_candidatos = np.linalg.norm(matriz_candidatos, axis=1)
+    denominador = np.outer(normas_candidatos, normas_vistas)
+    matriz_similitud = matriz_candidatos @ matriz_vistas.T
     with np.errstate(divide="ignore", invalid="ignore"):
-        sim_matrix = np.divide(sim_matrix, denom, out=np.zeros_like(sim_matrix), where=denom > 0)
+        matriz_similitud = np.divide(matriz_similitud, denominador, out=np.zeros_like(matriz_similitud), where=denominador > 0)
 
-    k = max(1, min(int(k), sim_matrix.shape[1]))
-    scores = []
-    for row_idx, cand in enumerate(candidatos):
-        sims = sim_matrix[row_idx]
-        top_idx = np.argpartition(sims, -k)[-k:]
-        top_sims = sims[top_idx]
-        top_sims = top_sims[top_sims > 0]
-        score = float(np.mean(top_sims)) if top_sims.size > 0 else 0.0
-        scores.append((cand, score))
+    cantidad_vecinos = max(1, min(int(cantidad_vecinos), matriz_similitud.shape[1]))
+    puntuaciones = []
+    for indice_fila, pelicula_candidata in enumerate(peliculas_candidatas):
+        similitudes = matriz_similitud[indice_fila]
+        indices_top = np.argpartition(similitudes, -cantidad_vecinos)[-cantidad_vecinos:]
+        similitudes_top = similitudes[indices_top]
+        similitudes_top = similitudes_top[similitudes_top > 0]
+        puntuacion = float(np.mean(similitudes_top)) if similitudes_top.size > 0 else 0.0
+        puntuaciones.append((pelicula_candidata, puntuacion))
 
-    meta = _metadata_peliculas(df).set_index("pelicula_ref")
-    out = pd.DataFrame(scores, columns=["pelicula_ref", "score"])
-    out["motivo"] = "x e y son parecidas porque los mismos usuarios las consumen"
-    out["algoritmo"] = "item_item"
-    out["pelicula_titulo"] = out["pelicula_ref"].map(meta["pelicula_titulo"]).fillna(out["pelicula_ref"])
-    out["categoria_nombre"] = out["pelicula_ref"].map(meta["categoria_nombre"]).fillna("Sin categoria")
-    return out.sort_values("score", ascending=False).head(n).reset_index(drop=True)
+    metadatos = _metadata_peliculas(datos_frame).set_index("pelicula_ref")
+    resultado = pd.DataFrame(puntuaciones, columns=["pelicula_ref", "score"])
+    resultado["motivo"] = "Otros clientes como tú disfrutaron esta película"
+    resultado["algoritmo"] = "item_item"
+    resultado["pelicula_titulo"] = resultado["pelicula_ref"].map(metadatos["pelicula_titulo"]).fillna(resultado["pelicula_ref"])
+    resultado["categoria_nombre"] = resultado["pelicula_ref"].map(metadatos["categoria_nombre"]).fillna("Sin categoria")
+    return resultado.sort_values("score", ascending=False).head(cantidad_recomendaciones).reset_index(drop=True)
 
 
 def recomendar_slope_one(
-    df: pd.DataFrame,
-    matriz_val: pd.DataFrame,
+    datos_frame: pd.DataFrame,
+    matriz_valoraciones: pd.DataFrame,
     cliente_id: str,
-    n: int = 10,
+    cantidad_recomendaciones: int = 10,
 ) -> pd.DataFrame:
     """
     Slope One con valoraciones reales.
     dev(y,x)=promedio(x-y)
     r^(u,x)=promedio_y(dev(y,x)+r(u,y))
     """
-    if cliente_id not in matriz_val.index:
+    if cliente_id not in matriz_valoraciones.index:
         raise ValueError("Cliente no encontrado en matriz de valoraciones.")
 
-    user_ratings = matriz_val.loc[cliente_id].dropna()
-    if user_ratings.empty:
+    valoraciones_usuario = matriz_valoraciones.loc[cliente_id].dropna()
+    if valoraciones_usuario.empty:
         raise ValueError("El cliente no tiene valoraciones para Slope One.")
 
-    dev = {}
-    freq = {}
-    for _, fila in matriz_val.iterrows():
-        rated = fila.dropna()
-        items = rated.index.tolist()
-        for i in items:
-            dev.setdefault(i, {})
-            freq.setdefault(i, {})
-            for j in items:
-                if i == j:
+    desviaciones = {}
+    frecuencias = {}
+    for _, fila in matriz_valoraciones.iterrows():
+        calificadas = fila.dropna()
+        articulos = calificadas.index.tolist()
+        for pelicula_x in articulos:
+            desviaciones.setdefault(pelicula_x, {})
+            frecuencias.setdefault(pelicula_x, {})
+            for pelicula_y in articulos:
+                if pelicula_x == pelicula_y:
                     continue
-                dev[i].setdefault(j, 0.0)
-                freq[i].setdefault(j, 0)
-                dev[i][j] += float(rated[i] - rated[j])
-                freq[i][j] += 1
+                desviaciones[pelicula_x].setdefault(pelicula_y, 0.0)
+                frecuencias[pelicula_x].setdefault(pelicula_y, 0)
+                desviaciones[pelicula_x][pelicula_y] += float(calificadas[pelicula_x] - calificadas[pelicula_y])
+                frecuencias[pelicula_x][pelicula_y] += 1
 
-    for i in dev:
-        for j in dev[i]:
-            if freq[i][j] > 0:
-                dev[i][j] /= float(freq[i][j])
+    for pelicula_x in desviaciones:
+        for pelicula_y in desviaciones[pelicula_x]:
+            if frecuencias[pelicula_x][pelicula_y] > 0:
+                desviaciones[pelicula_x][pelicula_y] /= float(frecuencias[pelicula_x][pelicula_y])
 
-    vistos = set(user_ratings.index.astype(str).tolist())
-    candidatos = [c for c in matriz_val.columns.astype(str) if c not in vistos]
+    peliculas_vistas = set(valoraciones_usuario.index.astype(str).tolist())
+    peliculas_candidatas = [pelicula for pelicula in matriz_valoraciones.columns.astype(str) if pelicula not in peliculas_vistas]
 
-    preds = []
-    for cand in candidatos:
+    predicciones = []
+    for pelicula_candidata in peliculas_candidatas:
         numerador = 0.0
         denominador = 0.0
-        for item_visto, rating in user_ratings.items():
-            if cand in dev and item_visto in dev[cand] and item_visto in freq[cand]:
-                f = float(freq[cand][item_visto])
-                numerador += (float(dev[cand][item_visto]) + float(rating)) * f
-                denominador += f
-        score = numerador / denominador if denominador > 0 else 0.0
-        preds.append((cand, score))
+        for pelicula_vista, valoracion in valoraciones_usuario.items():
+            if pelicula_candidata in desviaciones and pelicula_vista in desviaciones[pelicula_candidata] and pelicula_vista in frecuencias[pelicula_candidata]:
+                frecuencia = float(frecuencias[pelicula_candidata][pelicula_vista])
+                numerador += (float(desviaciones[pelicula_candidata][pelicula_vista]) + float(valoracion)) * frecuencia
+                denominador += frecuencia
+        puntuacion = numerador / denominador if denominador > 0 else 0.0
+        predicciones.append((pelicula_candidata, puntuacion))
 
-    meta = _metadata_peliculas(df).set_index("pelicula_ref")
-    out = pd.DataFrame(preds, columns=["pelicula_ref", "score"])
-    out["motivo"] = "si calificas bien y, probablemente tambien te guste x"
-    out["algoritmo"] = "slope_one"
-    out["pelicula_titulo"] = out["pelicula_ref"].map(meta["pelicula_titulo"]).fillna(out["pelicula_ref"])
-    out["categoria_nombre"] = out["pelicula_ref"].map(meta["categoria_nombre"]).fillna("Sin categoria")
-    return out.sort_values("score", ascending=False).head(n).reset_index(drop=True)
+    metadatos = _metadata_peliculas(datos_frame).set_index("pelicula_ref")
+    resultado = pd.DataFrame(predicciones, columns=["pelicula_ref", "score"])
+    resultado["motivo"] = "Basado en tu historial de alquileres y consumo, esta película podría gustarte"
+    resultado["algoritmo"] = "slope_one"
+    resultado["pelicula_titulo"] = resultado["pelicula_ref"].map(metadatos["pelicula_titulo"]).fillna(resultado["pelicula_ref"])
+    resultado["categoria_nombre"] = resultado["pelicula_ref"].map(metadatos["categoria_nombre"]).fillna("Sin categoria")
+    return resultado.sort_values("score", ascending=False).head(cantidad_recomendaciones).reset_index(drop=True)
 
 
 def recomendar_vsm_contenido(
-    df: pd.DataFrame,
+    datos_frame: pd.DataFrame,
     cliente_id: str,
-    n: int = 10,
-    k: int = 5,
+    cantidad_recomendaciones: int = 10,
+    cantidad_vecinos: int = 5,
 ) -> pd.DataFrame:
     """
     VSM con TF-IDF de contenido.
-    TF-IDF = TF * log(N/df)
-    Sim(x,y) = coseno entre vectores de contenido.
+    Usa el texto disponible en los datos de cada película para encontrar
+    películas parecidas a las que ya viste.
     """
-    vistos = _peliculas_vistas(df, cliente_id)
-    if not vistos:
+    peliculas_vistas = _peliculas_vistas(datos_frame, cliente_id)
+    if not peliculas_vistas:
         raise ValueError("El cliente no tiene historial para VSM de contenido.")
 
-    cols = [c for c in ["categoria_nombre", "pelicula_titulo", "descripcion", "actor_nombre_completo"] if c in df.columns]
-    base = df[["pelicula_ref"] + cols].copy()
-    for c in cols:
-        base[c] = base[c].fillna("").astype(str)
+    columnas = [c for c in ["categoria_nombre", "pelicula_titulo", "descripcion", "actor_nombre_completo"] if c in datos_frame.columns]
+    datos_base = datos_frame[["pelicula_ref"] + columnas].copy()
+    for columna in columnas:
+        datos_base[columna] = datos_base[columna].fillna("").astype(str)
 
-    if cols:
-        base["contenido"] = base[cols].agg(" ".join, axis=1)
+    if columnas:
+        datos_base["contenido"] = datos_base[columnas].agg(" ".join, axis=1)
     else:
-        base["contenido"] = base["pelicula_ref"].astype(str)
+        datos_base["contenido"] = datos_base["pelicula_ref"].astype(str)
 
-    pelis = base.groupby("pelicula_ref", as_index=False).agg(
+    peliculas = datos_base.groupby("pelicula_ref", as_index=False).agg(
         pelicula_titulo=("pelicula_ref", "first"),
         contenido=("contenido", " ".join),
     )
-    meta = _metadata_peliculas(df)
-    pelis = pelis.merge(meta, on="pelicula_ref", how="left")
+    metadatos = _metadata_peliculas(datos_frame)
+    peliculas = peliculas.merge(metadatos, on="pelicula_ref", how="left")
 
-    vectorizer = TfidfVectorizer(min_df=1)
-    tfidf = vectorizer.fit_transform(pelis["contenido"].astype(str))
+    vectorizador = TfidfVectorizer(min_df=1)
+    matriz_tfidf = vectorizador.fit_transform(peliculas["contenido"].astype(str))
 
-    refs = pelis["pelicula_ref"].astype(str).tolist()
-    idx = {r: i for i, r in enumerate(refs)}
+    referencias_peliculas = peliculas["pelicula_ref"].astype(str).tolist()
+    mapa_indices = {referencia: indice for indice, referencia in enumerate(referencias_peliculas)}
 
-    vistos_idx = [idx[r] for r in vistos if r in idx]
-    candidatos = [r for r in refs if r not in vistos]
-    if not candidatos:
+    indices_vistas = [mapa_indices[referencia] for referencia in peliculas_vistas if referencia in mapa_indices]
+    peliculas_candidatas = [referencia for referencia in referencias_peliculas if referencia not in peliculas_vistas]
+    if not peliculas_candidatas:
         raise ValueError("No hay peliculas candidatas para VSM.")
 
-    k = max(1, int(k))
-    scores = []
-    for cand in candidatos:
-        cand_idx = idx[cand]
-        sims = cosine_similarity(tfidf[cand_idx], tfidf[vistos_idx]).flatten()
-        order = np.argsort(-sims)[:k]
-        top = sims[order] if sims.size > 0 else np.array([0.0])
-        score = float(np.mean(top)) if top.size > 0 else 0.0
-        scores.append((cand, score))
+    cantidad_vecinos = max(1, int(cantidad_vecinos))
+    puntuaciones = []
+    for pelicula_candidata in peliculas_candidatas:
+        indice_candidata = mapa_indices[pelicula_candidata]
+        similitudes = cosine_similarity(matriz_tfidf[indice_candidata], matriz_tfidf[indices_vistas]).flatten()
+        orden_indices = np.argsort(-similitudes)[:cantidad_vecinos]
+        similitudes_top = similitudes[orden_indices] if similitudes.size > 0 else np.array([0.0])
+        puntuacion = float(np.mean(similitudes_top)) if similitudes_top.size > 0 else 0.0
+        puntuaciones.append((pelicula_candidata, puntuacion))
 
-    out = pd.DataFrame(scores, columns=["pelicula_ref", "score"])
-    out = out.merge(meta, on="pelicula_ref", how="left")
-    out["motivo"] = "x e y son parecidas por su contenido (genero, actores, etc.)"
-    out["algoritmo"] = "vsm"
-    out["pelicula_titulo"] = out["pelicula_titulo"].fillna(out["pelicula_ref"])
-    out["categoria_nombre"] = out["categoria_nombre"].fillna("Sin categoria")
-    return out.sort_values("score", ascending=False).head(n).reset_index(drop=True)
+    resultado = pd.DataFrame(puntuaciones, columns=["pelicula_ref", "score"])
+    resultado = resultado.merge(metadatos, on="pelicula_ref", how="left")
+    resultado["motivo"] = "Se parece a películas que viste por el texto disponible en sus datos"
+    resultado["algoritmo"] = "vsm"
+    resultado["pelicula_titulo"] = resultado["pelicula_titulo"].fillna(resultado["pelicula_ref"])
+    resultado["categoria_nombre"] = resultado["categoria_nombre"].fillna("Sin categoria")
+    return resultado.sort_values("score", ascending=False).head(cantidad_recomendaciones).reset_index(drop=True)

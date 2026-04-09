@@ -50,12 +50,12 @@ def recomendar(
     key = str(algoritmo).strip().lower()
 
     if key in {"item_item", "item-item", "item"}:
-        return recomendar_item_item_binario(datos.df_alquileres, datos.m_bin, cliente_id, n=n, k=k)
+        return recomendar_item_item_binario(datos.df_alquileres, datos.m_bin, cliente_id, cantidad_recomendaciones=n, cantidad_vecinos=k)
 
     if key in {"slope_one", "slope", "slopeone"}:
-        return recomendar_slope_one(datos.df_alquileres, datos.m_val, cliente_id, n=n)
+        return recomendar_slope_one(datos.df_alquileres, datos.m_val, cliente_id, cantidad_recomendaciones=n)
 
     if key in {"vsm", "contenido", "content"}:
-        return recomendar_vsm_contenido(datos.df_alquileres, cliente_id, n=n, k=k)
+        return recomendar_vsm_contenido(datos.df_alquileres, cliente_id, cantidad_recomendaciones=n, cantidad_vecinos=k)
 
     raise ValueError("Algoritmo no valido. Usa: item_item, slope_one o vsm")

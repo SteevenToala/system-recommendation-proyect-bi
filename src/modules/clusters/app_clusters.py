@@ -93,7 +93,7 @@ class AppClusters:
             if k <= 1:
                 raise ValueError("k debe ser mayor a 1.")
 
-            self.df_clusters = calcular_clusters_clientes(n_clusters=k)
+            self.df_clusters = calcular_clusters_clientes(cantidad_clusters=k)
             if self.df_clusters.empty:
                 raise ValueError("No se obtuvieron datos de clusters.")
 
