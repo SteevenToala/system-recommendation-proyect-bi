@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from pymongo import MongoClient
 
@@ -56,6 +57,43 @@ def preparar_fact(df: pd.DataFrame) -> pd.DataFrame:
 def _seleccionar_y_renombrar(df: pd.DataFrame, columnas: list[str], renombres: dict[str, str]) -> pd.DataFrame:
     """Selecciona columnas útiles y aplica nombres más legibles."""
     return df[columnas].rename(columns=renombres)
+
+
+def _normalizar_valor_json(valor):
+    """Convierte valores de pandas/numpy a tipos que JSON sí puede guardar."""
+    if valor is None:
+        return None
+
+    if isinstance(valor, (pd.Timestamp, np.datetime64)):
+        if pd.isna(valor):
+            return None
+        return pd.Timestamp(valor).isoformat()
+
+    if isinstance(valor, (np.integer,)):
+        return int(valor)
+
+    if isinstance(valor, (np.floating,)):
+        valor_float = float(valor)
+        return None if np.isnan(valor_float) else valor_float
+
+    if isinstance(valor, (np.bool_,)):
+        return bool(valor)
+
+    if isinstance(valor, dict):
+        return {clave: _normalizar_valor_json(contenido) for clave, contenido in valor.items()}
+
+    if isinstance(valor, (list, tuple, set)):
+        return [_normalizar_valor_json(elemento) for elemento in valor]
+
+    if pd.isna(valor):
+        return None
+
+    return valor
+
+
+def _normalizar_registro_json(registro: dict) -> dict:
+    """Normaliza un registro completo para guardarlo en JSON y Mongo."""
+    return {clave: _normalizar_valor_json(valor) for clave, valor in registro.items()}
 
 
 def _construir_dimensiones(tablas: dict) -> dict[str, pd.DataFrame]:
@@ -152,7 +190,7 @@ def unir_dimensiones(tablas: dict) -> pd.DataFrame:
 def guardar_json_y_mongo(df: pd.DataFrame) -> None:
     """Guarda el fact enriquecido en JSON y en MongoDB."""
     columnas_sin_ids = [col for col in df.columns if not col.lower().startswith('id_')]
-    registros = df[columnas_sin_ids].to_dict(orient='records')
+    registros = [_normalizar_registro_json(registro) for registro in df[columnas_sin_ids].to_dict(orient='records')]
 
     with open(RUTA_JSON, 'w', encoding='utf-8') as archivo:
         json.dump(registros, archivo, ensure_ascii=False, indent=4)
