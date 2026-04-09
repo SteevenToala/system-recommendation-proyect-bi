@@ -37,8 +37,6 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                 "pelicula_titulo": {"$ifNull": ["$pelicula_titulo", {"$toString": "$id_pelicula"}]},
                 "categoria_nombre": {"$ifNull": ["$categoria_nombre", "Sin categoria"]},
                 "ingreso": {"$ifNull": ["$ingreso", 0]},
-                "descripcion": {"$ifNull": ["$descripcion", ""]},
-                "actor_nombre_completo": {"$ifNull": ["$actor_nombre_completo", ""]},
             }
         }
     ]

@@ -129,7 +129,6 @@ def resumen_clusters(datos_clusters: pd.DataFrame) -> pd.DataFrame:
         .agg(
             clientes=("cliente_ref", "count"),
             alquileres_promedio=("total_alquileres", "mean"),
-            peliculas_unicas_promedio=("peliculas_unicas", "mean"),
             ingreso_total_promedio=("ingreso_total", "mean"),
         )
         .sort_values("cluster")
@@ -174,16 +173,16 @@ def etiquetar_segmentos(resumen: pd.DataFrame) -> pd.DataFrame:
             return "con poca actividad de alquileres"
         return "con muy poca actividad de alquileres"
 
-    def describir_gasto(nivel: str) -> str:
+    def describir_ingreso(nivel: str) -> str:
         if nivel == "muy alto":
-            return "con gasto total muy alto"
+            return "ingreso muy alto"
         if nivel == "alto":
-            return "con gasto total alto"
+            return "ingreso alto"
         if nivel == "medio":
-            return "con gasto total moderado"
+            return "ingreso medio"
         if nivel == "bajo":
-            return "con gasto total bajo"
-        return "con gasto total muy bajo"
+            return "ingreso bajo"
+        return "ingreso muy bajo"
 
     segmentos = []
     explicaciones = []
@@ -193,18 +192,18 @@ def etiquetar_segmentos(resumen: pd.DataFrame) -> pd.DataFrame:
         nivel_alquileres = obtener_nivel_por_posicion(posicion_alquileres, cantidad_grupos)
         nivel_ingreso = obtener_nivel_por_posicion(posicion_ingreso, cantidad_grupos)
         descripcion_alquileres = describir_alquileres(nivel_alquileres)
-        descripcion_gasto = describir_gasto(nivel_ingreso)
+        descripcion_ingreso = describir_ingreso(nivel_ingreso)
         promedio_alquileres = float(fila["alquileres_promedio"])
         promedio_ingreso_total = float(fila["ingreso_total_promedio"])
-        gasto_por_alquiler = promedio_ingreso_total / promedio_alquileres if promedio_alquileres > 0 else 0.0
+        ingreso_por_alquiler = promedio_ingreso_total / promedio_alquileres if promedio_alquileres > 0 else 0.0
 
         # Etiqueta simple: evita nombres confusos.
         letra = chr(65 + int(fila["cluster"]))  # A, B, C...
         segmento = f"Grupo {letra}"
         explicacion = (
-            f"Perfil del grupo: clientes {descripcion_alquileres} y {descripcion_gasto}. "
-            f"En promedio realizan {promedio_alquileres:.2f} alquileres y generan {promedio_ingreso_total:.2f} de ingreso total. "
-            f"Eso equivale a {gasto_por_alquiler:.2f} de gasto promedio por alquiler."
+            f"Perfil: {descripcion_alquileres}, {descripcion_ingreso}. "
+            f"Promedio: {promedio_alquileres:.2f} alquileres, ingreso total {promedio_ingreso_total:.2f}, "
+            f"ingreso por alquiler {ingreso_por_alquiler:.2f}."
         )
 
         segmentos.append(segmento)

@@ -54,7 +54,7 @@ class AppClusters:
 
         self.tree = ttk.Treeview(
             left,
-            columns=("cluster", "segmento", "clientes", "alq", "pelis", "ingreso"),
+            columns=("cluster", "segmento", "clientes", "alq", "ingreso"),
             show="headings",
             height=18,
         )
@@ -62,14 +62,12 @@ class AppClusters:
         self.tree.heading("segmento", text="Grupo")
         self.tree.heading("clientes", text="Clientes")
         self.tree.heading("alq", text="Alquileres prom.")
-        self.tree.heading("pelis", text="Peliculas unicas prom.")
         self.tree.heading("ingreso", text="Ingreso total prom.")
 
         self.tree.column("cluster", width=70, anchor="center")
         self.tree.column("segmento", width=170, anchor="w")
         self.tree.column("clientes", width=90, anchor="center")
         self.tree.column("alq", width=130, anchor="center")
-        self.tree.column("pelis", width=150, anchor="center")
         self.tree.column("ingreso", width=130, anchor="center")
         self.tree.pack(fill=tk.Y, expand=True)
 
@@ -144,7 +142,6 @@ class AppClusters:
                     str(row["segmento"]),
                     int(row["clientes"]),
                     f"{float(row['alquileres_promedio']):.2f}",
-                    f"{float(row['peliculas_unicas_promedio']):.2f}",
                     f"{float(row['ingreso_total_promedio']):.2f}",
                 ),
             )

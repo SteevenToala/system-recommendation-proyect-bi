@@ -153,7 +153,7 @@ def recomendar_vsm_contenido(
     if not peliculas_vistas:
         raise ValueError("El cliente no tiene historial para VSM de contenido.")
 
-    columnas = [c for c in ["categoria_nombre", "pelicula_titulo", "descripcion", "actor_nombre_completo"] if c in datos_frame.columns]
+    columnas = [c for c in ["categoria_nombre", "pelicula_titulo"] if c in datos_frame.columns]
     datos_base = datos_frame[["pelicula_ref"] + columnas].copy()
     for columna in columnas:
         datos_base[columna] = datos_base[columna].fillna("").astype(str)

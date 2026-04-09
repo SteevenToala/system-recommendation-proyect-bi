@@ -81,12 +81,8 @@ Campos que usa el sistema:
 - categoria_nombre: categoría o tipo de película.
 - ingreso: valor numérico que se usa para armar las tablas de consumo.
 
-Campos opcionales que pueden existir:
-- descripcion: texto descriptivo de la película.
-- actor_nombre_completo: nombres relacionados con la película.
-
-Si un campo no existe, el sistema intenta seguir con los datos disponibles.
-Por eso la explicación está escrita para lo que realmente se puede usar.
+Con estos campos el sistema puede recomendar sin depender de descripciones largas
+ni de datos de actores.
             """.strip(),
         )
 
