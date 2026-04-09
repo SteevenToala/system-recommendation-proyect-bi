@@ -163,6 +163,28 @@ def etiquetar_segmentos(resumen: pd.DataFrame) -> pd.DataFrame:
             return "alto"
         return "muy alto"
 
+    def describir_alquileres(nivel: str) -> str:
+        if nivel == "muy alto":
+            return "muy activo en cantidad de alquileres"
+        if nivel == "alto":
+            return "activo en cantidad de alquileres"
+        if nivel == "medio":
+            return "con actividad de alquileres moderada"
+        if nivel == "bajo":
+            return "con poca actividad de alquileres"
+        return "con muy poca actividad de alquileres"
+
+    def describir_gasto(nivel: str) -> str:
+        if nivel == "muy alto":
+            return "con gasto total muy alto"
+        if nivel == "alto":
+            return "con gasto total alto"
+        if nivel == "medio":
+            return "con gasto total moderado"
+        if nivel == "bajo":
+            return "con gasto total bajo"
+        return "con gasto total muy bajo"
+
     segmentos = []
     explicaciones = []
     for _, fila in resultado.iterrows():
@@ -170,16 +192,19 @@ def etiquetar_segmentos(resumen: pd.DataFrame) -> pd.DataFrame:
         posicion_ingreso = int(fila["rango_ingreso"])
         nivel_alquileres = obtener_nivel_por_posicion(posicion_alquileres, cantidad_grupos)
         nivel_ingreso = obtener_nivel_por_posicion(posicion_ingreso, cantidad_grupos)
+        descripcion_alquileres = describir_alquileres(nivel_alquileres)
+        descripcion_gasto = describir_gasto(nivel_ingreso)
+        promedio_alquileres = float(fila["alquileres_promedio"])
+        promedio_ingreso_total = float(fila["ingreso_total_promedio"])
+        gasto_por_alquiler = promedio_ingreso_total / promedio_alquileres if promedio_alquileres > 0 else 0.0
 
         # Etiqueta simple: evita nombres confusos.
         letra = chr(65 + int(fila["cluster"]))  # A, B, C...
         segmento = f"Grupo {letra}"
         explicacion = (
-            f"Perfil del grupo: alquileres {nivel_alquileres} y gasto total {nivel_ingreso}. "
-            f"Posicion en alquileres: {posicion_alquileres}/{cantidad_grupos}; "
-            f"posicion en gasto: {posicion_ingreso}/{cantidad_grupos}. "
-            f"Promedios -> alquileres: {float(fila['alquileres_promedio']):.2f}, "
-            f"ingreso total: {float(fila['ingreso_total_promedio']):.2f}."
+            f"Perfil del grupo: clientes {descripcion_alquileres} y {descripcion_gasto}. "
+            f"En promedio realizan {promedio_alquileres:.2f} alquileres y generan {promedio_ingreso_total:.2f} de ingreso total. "
+            f"Eso equivale a {gasto_por_alquiler:.2f} de gasto promedio por alquiler."
         )
 
         segmentos.append(segmento)
