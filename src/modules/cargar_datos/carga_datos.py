@@ -217,49 +217,47 @@ def _construir_documentos_bi(df: pd.DataFrame) -> list[dict]:
             'pelicula_titulo': registro.get('pelicula_titulo'),
             'categoria_nombre': registro.get('categoria_nombre') or 'Sin categoria',
             'cliente_nombre_completo': registro.get('cliente_nombre_completo'),
-            'dimensiones': {
-                'tiempo': {
-                    'id_tiempo': registro.get('id_tiempo'),
-                    'fecha': registro.get('tiempo_fecha'),
-                    'dia': registro.get('tiempo_dia'),
-                    'mes': registro.get('tiempo_mes'),
-                    'nombre_mes': registro.get('tiempo_nombre_mes'),
-                    'trimestre': registro.get('tiempo_trimestre'),
-                    'anio': registro.get('tiempo_anio'),
-                },
-                'cliente': {
-                    'id_cliente': registro.get('id_cliente'),
-                    'nombre': registro.get('cliente_nombre'),
-                    'apellido': registro.get('cliente_apellido'),
-                    'nombre_completo': registro.get('cliente_nombre_completo'),
-                    'email': registro.get('cliente_email'),
-                    'activo': registro.get('cliente_activo'),
-                },
-                'pelicula': {
-                    'id_pelicula': registro.get('id_pelicula'),
-                    'titulo': registro.get('pelicula_titulo'),
-                    'duracion': registro.get('pelicula_duracion'),
-                    'clasificacion': registro.get('pelicula_clasificacion'),
-                    'anio_lanzamiento': registro.get('pelicula_anio_lanzamiento'),
-                    'idioma': registro.get('pelicula_idioma'),
-                    'precio_renta': registro.get('pelicula_precio_renta'),
-                    'costo_reposicion': registro.get('pelicula_costo_reposicion'),
-                    'actores': registro.get('pelicula_actores') or [],
-                    'cantidad_actores': registro.get('cantidad_actores') or 0,
-                },
-                'categoria': {
-                    'id_categoria': registro.get('id_categoria'),
-                    'nombre': registro.get('categoria_nombre'),
-                },
-                'tienda': {
-                    'id_tienda': registro.get('id_tienda'),
-                    'nombre': registro.get('tienda_nombre'),
-                },
-                'ciudad': {
-                    'id_ciudad': registro.get('id_ciudad'),
-                    'nombre': registro.get('ciudad_nombre'),
-                    'pais': registro.get('ciudad_pais'),
-                },
+            'tiempo': {
+                'id_tiempo': registro.get('id_tiempo'),
+                'fecha': registro.get('tiempo_fecha'),
+                'dia': registro.get('tiempo_dia'),
+                'mes': registro.get('tiempo_mes'),
+                'nombre_mes': registro.get('tiempo_nombre_mes'),
+                'trimestre': registro.get('tiempo_trimestre'),
+                'anio': registro.get('tiempo_anio'),
+            },
+            'cliente': {
+                'id_cliente': registro.get('id_cliente'),
+                'nombre': registro.get('cliente_nombre'),
+                'apellido': registro.get('cliente_apellido'),
+                'nombre_completo': registro.get('cliente_nombre_completo'),
+                'email': registro.get('cliente_email'),
+                'activo': registro.get('cliente_activo'),
+            },
+            'pelicula': {
+                'id_pelicula': registro.get('id_pelicula'),
+                'titulo': registro.get('pelicula_titulo'),
+                'duracion': registro.get('pelicula_duracion'),
+                'clasificacion': registro.get('pelicula_clasificacion'),
+                'anio_lanzamiento': registro.get('pelicula_anio_lanzamiento'),
+                'idioma': registro.get('pelicula_idioma'),
+                'precio_renta': registro.get('pelicula_precio_renta'),
+                'costo_reposicion': registro.get('pelicula_costo_reposicion'),
+                'actores': registro.get('pelicula_actores') or [],
+                'cantidad_actores': registro.get('cantidad_actores') or 0,
+            },
+            'categoria': {
+                'id_categoria': registro.get('id_categoria'),
+                'nombre': registro.get('categoria_nombre'),
+            },
+            'tienda': {
+                'id_tienda': registro.get('id_tienda'),
+                'nombre': registro.get('tienda_nombre'),
+            },
+            'ciudad': {
+                'id_ciudad': registro.get('id_ciudad'),
+                'nombre': registro.get('ciudad_nombre'),
+                'pais': registro.get('ciudad_pais'),
             },
         }
 
@@ -294,7 +292,7 @@ def main() -> None:
 
     print(f'Archivo JSON creado en: {RUTA_JSON}')
     print(f'¡Exito! Se insertaron {len(df)} documentos en MongoDB ({DB_NAME}.{COLLECTION_NAME}).')
-    print('La coleccion alquileres ahora guarda el hecho con dimensiones embebidas para analisis BI.')
+    print('La coleccion alquileres ahora guarda el hecho con dimensiones embebidas por entidad (cliente, pelicula, tiempo, etc.).')
 
 
 if __name__ == '__main__':
