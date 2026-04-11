@@ -187,10 +187,90 @@ def unir_dimensiones(tablas: dict) -> pd.DataFrame:
     return fact
 
 
+def _construir_documentos_bi(df: pd.DataFrame) -> list[dict]:
+    """Construye documentos tipo hecho con dimensiones embebidas para BI."""
+    registros = df.to_dict(orient='records')
+    documentos = []
+
+    for registro in registros:
+        cliente_ref = registro.get('id_cliente')
+        if cliente_ref is None:
+            cliente_ref = registro.get('cliente_nombre_completo') or registro.get('cliente_nombre')
+
+        pelicula_ref = registro.get('id_pelicula')
+        if pelicula_ref is None:
+            pelicula_ref = registro.get('pelicula_titulo')
+
+        documento = {
+            'id_hecho': registro.get('id_hecho'),
+            'id_tiempo': registro.get('id_tiempo'),
+            'id_cliente': registro.get('id_cliente'),
+            'id_pelicula': registro.get('id_pelicula'),
+            'id_tienda': registro.get('id_tienda'),
+            'id_categoria': registro.get('id_categoria'),
+            'id_ciudad': registro.get('id_ciudad'),
+            'cantidad_alquiler': registro.get('cantidad_alquiler'),
+            'ingreso': registro.get('ingreso'),
+            'duracion_alquiler': registro.get('duracion_alquiler'),
+            'cliente_ref': str(cliente_ref) if cliente_ref is not None else None,
+            'pelicula_ref': str(pelicula_ref) if pelicula_ref is not None else None,
+            'pelicula_titulo': registro.get('pelicula_titulo'),
+            'categoria_nombre': registro.get('categoria_nombre') or 'Sin categoria',
+            'cliente_nombre_completo': registro.get('cliente_nombre_completo'),
+            'dimensiones': {
+                'tiempo': {
+                    'id_tiempo': registro.get('id_tiempo'),
+                    'fecha': registro.get('tiempo_fecha'),
+                    'dia': registro.get('tiempo_dia'),
+                    'mes': registro.get('tiempo_mes'),
+                    'nombre_mes': registro.get('tiempo_nombre_mes'),
+                    'trimestre': registro.get('tiempo_trimestre'),
+                    'anio': registro.get('tiempo_anio'),
+                },
+                'cliente': {
+                    'id_cliente': registro.get('id_cliente'),
+                    'nombre': registro.get('cliente_nombre'),
+                    'apellido': registro.get('cliente_apellido'),
+                    'nombre_completo': registro.get('cliente_nombre_completo'),
+                    'email': registro.get('cliente_email'),
+                    'activo': registro.get('cliente_activo'),
+                },
+                'pelicula': {
+                    'id_pelicula': registro.get('id_pelicula'),
+                    'titulo': registro.get('pelicula_titulo'),
+                    'duracion': registro.get('pelicula_duracion'),
+                    'clasificacion': registro.get('pelicula_clasificacion'),
+                    'anio_lanzamiento': registro.get('pelicula_anio_lanzamiento'),
+                    'idioma': registro.get('pelicula_idioma'),
+                    'precio_renta': registro.get('pelicula_precio_renta'),
+                    'costo_reposicion': registro.get('pelicula_costo_reposicion'),
+                    'actores': registro.get('pelicula_actores') or [],
+                    'cantidad_actores': registro.get('cantidad_actores') or 0,
+                },
+                'categoria': {
+                    'id_categoria': registro.get('id_categoria'),
+                    'nombre': registro.get('categoria_nombre'),
+                },
+                'tienda': {
+                    'id_tienda': registro.get('id_tienda'),
+                    'nombre': registro.get('tienda_nombre'),
+                },
+                'ciudad': {
+                    'id_ciudad': registro.get('id_ciudad'),
+                    'nombre': registro.get('ciudad_nombre'),
+                    'pais': registro.get('ciudad_pais'),
+                },
+            },
+        }
+
+        documentos.append(_normalizar_registro_json(documento))
+
+    return documentos
+
+
 def guardar_json_y_mongo(df: pd.DataFrame) -> None:
-    """Guarda el fact enriquecido en JSON y en MongoDB."""
-    columnas_sin_ids = [col for col in df.columns if not col.lower().startswith('id_')]
-    registros = [_normalizar_registro_json(registro) for registro in df[columnas_sin_ids].to_dict(orient='records')]
+    """Guarda documentos BI con dimensiones embebidas en JSON y MongoDB."""
+    registros = _construir_documentos_bi(df)
 
     with open(RUTA_JSON, 'w', encoding='utf-8') as archivo:
         json.dump(registros, archivo, ensure_ascii=False, indent=4)
@@ -214,7 +294,7 @@ def main() -> None:
 
     print(f'Archivo JSON creado en: {RUTA_JSON}')
     print(f'¡Exito! Se insertaron {len(df)} documentos en MongoDB ({DB_NAME}.{COLLECTION_NAME}).')
-    print('El fact enriquecido se guarda sin IDs tecnicos y agrega nombres como cliente_nombre_completo, categoria_nombre y pelicula_titulo.')
+    print('La coleccion alquileres ahora guarda el hecho con dimensiones embebidas para analisis BI.')
 
 
 if __name__ == '__main__':

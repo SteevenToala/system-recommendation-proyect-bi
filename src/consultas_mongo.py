@@ -30,12 +30,63 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                 "_id": 0,
                 "cliente_ref": {
                     "$toString": {
-                        "$ifNull": ["$id_cliente", {"$ifNull": ["$cliente_nombre_completo", "$cliente_nombre"]}]
+                        "$ifNull": [
+                            "$id_cliente",
+                            {
+                                "$ifNull": [
+                                    "$dimensiones.cliente.id_cliente",
+                                    {
+                                        "$ifNull": [
+                                            "$cliente_nombre_completo",
+                                            {
+                                                "$ifNull": [
+                                                    "$dimensiones.cliente.nombre_completo",
+                                                    {
+                                                        "$ifNull": [
+                                                            "$cliente_nombre",
+                                                            "$dimensiones.cliente.nombre",
+                                                        ]
+                                                    },
+                                                ]
+                                            },
+                                        ]
+                                    },
+                                ]
+                            },
+                        ]
                     }
                 },
-                "pelicula_ref": {"$toString": {"$ifNull": ["$id_pelicula", "$pelicula_titulo"]}},
-                "pelicula_titulo": {"$ifNull": ["$pelicula_titulo", {"$toString": "$id_pelicula"}]},
-                "categoria_nombre": {"$ifNull": ["$categoria_nombre", "Sin categoria"]},
+                "pelicula_ref": {
+                    "$toString": {
+                        "$ifNull": [
+                            "$id_pelicula",
+                            {
+                                "$ifNull": [
+                                    "$dimensiones.pelicula.id_pelicula",
+                                    {"$ifNull": ["$pelicula_titulo", "$dimensiones.pelicula.titulo"]},
+                                ]
+                            },
+                        ]
+                    }
+                },
+                "pelicula_titulo": {
+                    "$ifNull": [
+                        "$pelicula_titulo",
+                        {
+                            "$ifNull": [
+                                "$dimensiones.pelicula.titulo",
+                                {
+                                    "$toString": {
+                                        "$ifNull": ["$id_pelicula", "$dimensiones.pelicula.id_pelicula"]
+                                    }
+                                },
+                            ]
+                        },
+                    ]
+                },
+                "categoria_nombre": {
+                    "$ifNull": ["$categoria_nombre", {"$ifNull": ["$dimensiones.categoria.nombre", "Sin categoria"]}]
+                },
                 "ingreso": {"$ifNull": ["$ingreso", 0]},
             }
         }
@@ -45,10 +96,56 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
     pipeline_peliculas = [
         {
             "$group": {
-                "_id": {"$toString": {"$ifNull": ["$id_pelicula", "$pelicula_titulo"]}},
-                "pelicula_ref": {"$first": {"$toString": {"$ifNull": ["$id_pelicula", "$pelicula_titulo"]}}},
-                "pelicula_titulo": {"$first": {"$ifNull": ["$pelicula_titulo", {"$toString": "$id_pelicula"}]}},
-                "categoria_nombre": {"$first": {"$ifNull": ["$categoria_nombre", "Sin categoria"]}},
+                "_id": {
+                    "$toString": {
+                        "$ifNull": [
+                            "$id_pelicula",
+                            {
+                                "$ifNull": [
+                                    "$dimensiones.pelicula.id_pelicula",
+                                    {"$ifNull": ["$pelicula_titulo", "$dimensiones.pelicula.titulo"]},
+                                ]
+                            },
+                        ]
+                    }
+                },
+                "pelicula_ref": {
+                    "$first": {
+                        "$toString": {
+                            "$ifNull": [
+                                "$id_pelicula",
+                                {
+                                    "$ifNull": [
+                                        "$dimensiones.pelicula.id_pelicula",
+                                        {"$ifNull": ["$pelicula_titulo", "$dimensiones.pelicula.titulo"]},
+                                    ]
+                                },
+                            ]
+                        }
+                    }
+                },
+                "pelicula_titulo": {
+                    "$first": {
+                        "$ifNull": [
+                            "$pelicula_titulo",
+                            {
+                                "$ifNull": [
+                                    "$dimensiones.pelicula.titulo",
+                                    {
+                                        "$toString": {
+                                            "$ifNull": ["$id_pelicula", "$dimensiones.pelicula.id_pelicula"]
+                                        }
+                                    },
+                                ]
+                            },
+                        ]
+                    }
+                },
+                "categoria_nombre": {
+                    "$first": {
+                        "$ifNull": ["$categoria_nombre", {"$ifNull": ["$dimensiones.categoria.nombre", "Sin categoria"]}]
+                    }
+                },
             }
         },
         {"$project": {"_id": 0, "pelicula_ref": 1, "pelicula_titulo": 1, "categoria_nombre": 1}},
@@ -60,13 +157,59 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
             "$group": {
                 "_id": {
                     "$toString": {
-                        "$ifNull": ["$id_cliente", {"$ifNull": ["$cliente_nombre_completo", "$cliente_nombre"]}]
+                        "$ifNull": [
+                            "$id_cliente",
+                            {
+                                "$ifNull": [
+                                    "$dimensiones.cliente.id_cliente",
+                                    {
+                                        "$ifNull": [
+                                            "$cliente_nombre_completo",
+                                            {
+                                                "$ifNull": [
+                                                    "$dimensiones.cliente.nombre_completo",
+                                                    {
+                                                        "$ifNull": [
+                                                            "$cliente_nombre",
+                                                            "$dimensiones.cliente.nombre",
+                                                        ]
+                                                    },
+                                                ]
+                                            },
+                                        ]
+                                    },
+                                ]
+                            },
+                        ]
                     }
                 },
                 "cliente_ref": {
                     "$first": {
                         "$toString": {
-                            "$ifNull": ["$id_cliente", {"$ifNull": ["$cliente_nombre_completo", "$cliente_nombre"]}]
+                            "$ifNull": [
+                                "$id_cliente",
+                                {
+                                    "$ifNull": [
+                                        "$dimensiones.cliente.id_cliente",
+                                        {
+                                            "$ifNull": [
+                                                "$cliente_nombre_completo",
+                                                {
+                                                    "$ifNull": [
+                                                        "$dimensiones.cliente.nombre_completo",
+                                                        {
+                                                            "$ifNull": [
+                                                                "$cliente_nombre",
+                                                                "$dimensiones.cliente.nombre",
+                                                            ]
+                                                        },
+                                                    ]
+                                                },
+                                            ]
+                                        },
+                                    ]
+                                },
+                            ]
                         }
                     }
                 },
