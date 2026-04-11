@@ -34,17 +34,22 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                             "$id_cliente",
                             {
                                 "$ifNull": [
-                                    "$dimensiones.cliente.id_cliente",
+                                    "$cliente.id_cliente",
                                     {
                                         "$ifNull": [
                                             "$cliente_nombre_completo",
                                             {
                                                 "$ifNull": [
-                                                    "$dimensiones.cliente.nombre_completo",
+                                                    "$cliente.nombre_completo",
                                                     {
                                                         "$ifNull": [
                                                             "$cliente_nombre",
-                                                            "$dimensiones.cliente.nombre",
+                                                            {
+                                                                "$ifNull": [
+                                                                    "$cliente.nombre",
+                                                                    {"$ifNull": ["$dimensiones.cliente.id_cliente", {"$ifNull": ["$dimensiones.cliente.nombre_completo", "$dimensiones.cliente.nombre"]}]},
+                                                                ]
+                                                            },
                                                         ]
                                                     },
                                                 ]
@@ -62,8 +67,8 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                             "$id_pelicula",
                             {
                                 "$ifNull": [
-                                    "$dimensiones.pelicula.id_pelicula",
-                                    {"$ifNull": ["$pelicula_titulo", "$dimensiones.pelicula.titulo"]},
+                                    "$pelicula.id_pelicula",
+                                    {"$ifNull": ["$pelicula_titulo", {"$ifNull": ["$pelicula.titulo", {"$ifNull": ["$dimensiones.pelicula.id_pelicula", "$dimensiones.pelicula.titulo"]}]}]},
                                 ]
                             },
                         ]
@@ -74,18 +79,19 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                         "$pelicula_titulo",
                         {
                             "$ifNull": [
-                                "$dimensiones.pelicula.titulo",
+                                "$pelicula.titulo",
                                 {
-                                    "$toString": {
-                                        "$ifNull": ["$id_pelicula", "$dimensiones.pelicula.id_pelicula"]
-                                    }
+                                    "$ifNull": [
+                                        {"$toString": "$id_pelicula"},
+                                        {"$ifNull": [{"$toString": "$pelicula.id_pelicula"}, {"$ifNull": ["$dimensiones.pelicula.titulo", {"$toString": "$dimensiones.pelicula.id_pelicula"}]}]},
+                                    ]
                                 },
                             ]
                         },
                     ]
                 },
                 "categoria_nombre": {
-                    "$ifNull": ["$categoria_nombre", {"$ifNull": ["$dimensiones.categoria.nombre", "Sin categoria"]}]
+                    "$ifNull": ["$categoria_nombre", {"$ifNull": ["$categoria.nombre", {"$ifNull": ["$dimensiones.categoria.nombre", "Sin categoria"]}]}]
                 },
                 "ingreso": {"$ifNull": ["$ingreso", 0]},
             }
@@ -102,8 +108,8 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                             "$id_pelicula",
                             {
                                 "$ifNull": [
-                                    "$dimensiones.pelicula.id_pelicula",
-                                    {"$ifNull": ["$pelicula_titulo", "$dimensiones.pelicula.titulo"]},
+                                    "$pelicula.id_pelicula",
+                                    {"$ifNull": ["$pelicula_titulo", {"$ifNull": ["$pelicula.titulo", {"$ifNull": ["$dimensiones.pelicula.id_pelicula", "$dimensiones.pelicula.titulo"]}]}]},
                                 ]
                             },
                         ]
@@ -116,8 +122,8 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                                 "$id_pelicula",
                                 {
                                     "$ifNull": [
-                                        "$dimensiones.pelicula.id_pelicula",
-                                        {"$ifNull": ["$pelicula_titulo", "$dimensiones.pelicula.titulo"]},
+                                        "$pelicula.id_pelicula",
+                                        {"$ifNull": ["$pelicula_titulo", {"$ifNull": ["$pelicula.titulo", {"$ifNull": ["$dimensiones.pelicula.id_pelicula", "$dimensiones.pelicula.titulo"]}]}]},
                                     ]
                                 },
                             ]
@@ -130,12 +136,8 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                             "$pelicula_titulo",
                             {
                                 "$ifNull": [
-                                    "$dimensiones.pelicula.titulo",
-                                    {
-                                        "$toString": {
-                                            "$ifNull": ["$id_pelicula", "$dimensiones.pelicula.id_pelicula"]
-                                        }
-                                    },
+                                    "$pelicula.titulo",
+                                    {"$ifNull": [{"$toString": "$id_pelicula"}, {"$ifNull": [{"$toString": "$pelicula.id_pelicula"}, {"$ifNull": ["$dimensiones.pelicula.titulo", {"$toString": "$dimensiones.pelicula.id_pelicula"}]}]}]},
                                 ]
                             },
                         ]
@@ -143,7 +145,7 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                 },
                 "categoria_nombre": {
                     "$first": {
-                        "$ifNull": ["$categoria_nombre", {"$ifNull": ["$dimensiones.categoria.nombre", "Sin categoria"]}]
+                        "$ifNull": ["$categoria_nombre", {"$ifNull": ["$categoria.nombre", {"$ifNull": ["$dimensiones.categoria.nombre", "Sin categoria"]}]}]
                     }
                 },
             }
@@ -161,17 +163,17 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                             "$id_cliente",
                             {
                                 "$ifNull": [
-                                    "$dimensiones.cliente.id_cliente",
+                                    "$cliente.id_cliente",
                                     {
                                         "$ifNull": [
                                             "$cliente_nombre_completo",
                                             {
                                                 "$ifNull": [
-                                                    "$dimensiones.cliente.nombre_completo",
+                                                    "$cliente.nombre_completo",
                                                     {
                                                         "$ifNull": [
                                                             "$cliente_nombre",
-                                                            "$dimensiones.cliente.nombre",
+                                                            {"$ifNull": ["$cliente.nombre", {"$ifNull": ["$dimensiones.cliente.id_cliente", {"$ifNull": ["$dimensiones.cliente.nombre_completo", "$dimensiones.cliente.nombre"]}]}]},
                                                         ]
                                                     },
                                                 ]
@@ -190,17 +192,17 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
                                 "$id_cliente",
                                 {
                                     "$ifNull": [
-                                        "$dimensiones.cliente.id_cliente",
+                                        "$cliente.id_cliente",
                                         {
                                             "$ifNull": [
                                                 "$cliente_nombre_completo",
                                                 {
                                                     "$ifNull": [
-                                                        "$dimensiones.cliente.nombre_completo",
+                                                        "$cliente.nombre_completo",
                                                         {
                                                             "$ifNull": [
                                                                 "$cliente_nombre",
-                                                                "$dimensiones.cliente.nombre",
+                                                                {"$ifNull": ["$cliente.nombre", {"$ifNull": ["$dimensiones.cliente.id_cliente", {"$ifNull": ["$dimensiones.cliente.nombre_completo", "$dimensiones.cliente.nombre"]}]}]},
                                                             ]
                                                         },
                                                     ]
