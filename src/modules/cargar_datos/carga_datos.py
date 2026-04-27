@@ -193,27 +193,11 @@ def _construir_documentos_bi(df: pd.DataFrame) -> list[dict]:
     documentos = []
 
     for registro in registros:
-        cliente_ref = registro.get('id_cliente')
-        if cliente_ref is None:
-            cliente_ref = registro.get('cliente_nombre_completo') or registro.get('cliente_nombre')
-
-        pelicula_ref = registro.get('id_pelicula')
-        if pelicula_ref is None:
-            pelicula_ref = registro.get('pelicula_titulo')
-
         documento = {
             'id_hecho': registro.get('id_hecho'),
-            'id_tiempo': registro.get('id_tiempo'),
-            'id_cliente': registro.get('id_cliente'),
-            'id_pelicula': registro.get('id_pelicula'),
-            'id_tienda': registro.get('id_tienda'),
-            'id_categoria': registro.get('id_categoria'),
-            'id_ciudad': registro.get('id_ciudad'),
             'cantidad_alquiler': registro.get('cantidad_alquiler'),
             'ingreso': registro.get('ingreso'),
             'duracion_alquiler': registro.get('duracion_alquiler'),
-            'cliente_ref': str(cliente_ref) if cliente_ref is not None else None,
-            'pelicula_ref': str(pelicula_ref) if pelicula_ref is not None else None,
             'pelicula_titulo': registro.get('pelicula_titulo'),
             'categoria_nombre': registro.get('categoria_nombre') or 'Sin categoria',
             'cliente_nombre_completo': registro.get('cliente_nombre_completo'),
