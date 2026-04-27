@@ -232,6 +232,7 @@ def cargar_dataframes_desde_consultas() -> Dict[str, pd.DataFrame]:
     if df_alquileres.empty:
         raise ValueError("No hay datos en Mongo para construir los DataFrames.")
 
+    # Conversión de tipos para columnas clave
     df_alquileres["cliente_ref"] = df_alquileres["cliente_ref"].astype(str)
     df_alquileres["pelicula_ref"] = df_alquileres["pelicula_ref"].astype(str)
     df_alquileres["pelicula_titulo"] = df_alquileres["pelicula_titulo"].astype(str)
