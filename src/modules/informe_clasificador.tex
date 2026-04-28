@@ -1,0 +1,524 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────────────────────────
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[letterpaper,top=2cm,bottom=5cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{microtype}
+
+
+% ── Colores ───────────────────────────────────────────────────────────────────
+\definecolor{azulBI}{RGB}{30, 80, 160}
+\definecolor{grisclaro}{RGB}{245, 245, 245}
+\definecolor{rojocomentario}{RGB}{150, 40, 40}
+\definecolor{azulkw}{RGB}{0, 70, 140}
+\definecolor{naranjacadena}{RGB}{180, 80, 0}
+
+% ── Estilo de código Python ───────────────────────────────────────────────────
+\lstdefinestyle{python}{
+    language=Python,
+    backgroundcolor=\color{grisclaro},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{azulkw}\bfseries,
+    stringstyle=\color{naranjacadena},
+    commentstyle=\color{rojocomentario}\itshape,
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    stepnumber=1,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible,
+    keepspaces=true,
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{azulBI},
+    captionpos=b,
+    tabsize=4,
+    xleftmargin=1.5em,
+    xrightmargin=0.5em,
+    literate=
+        {á}{{\'{a}}}1 {é}{{\'{e}}}1 {í}{{\'{i}}}1 {ó}{{\'{o}}}1 {ú}{{\'{u}}}1
+        {Á}{{\'{A}}}1 {É}{{\'{E}}}1 {Í}{{\'{I}}}1 {Ó}{{\'{O}}}1 {Ú}{{\'{U}}}1
+        {ñ}{{\~{n}}}1 {Ñ}{{\~{N}}}1
+        {->}{{$\rightarrow$}}2 {>=}{{$\geq$}}2
+}
+\lstset{style=python}
+
+% ── Encabezado institucional UTA ──────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{70pt}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[C]{%
+    \begin{minipage}[c]{2.5cm}
+        \centering
+        \includegraphics[width=2.2cm]{imagenes/uta.png}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[c]{8cm}
+        \centering
+        \small {\textbf{UNIVERSIDAD TÉCNICA DE AMBATO}} \\[0.1cm]
+        \scriptsize \textit{FACULTAD DE INGENIERÍA EN SISTEMAS ELECTRÓNICA E INDUSTRIAL} \\[0.1cm]
+        \scriptsize \textbf{CARRERA DE SOFTWARE} \\[0.1cm]
+        \scriptsize \textbf{CICLO ACADÉMICO: FEBRERO -- JULIO 2026}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[c]{2.5cm}
+        \centering
+        \includegraphics[width=2.2cm]{imagenes/fisei.png}
+    \end{minipage}%
+}
+
+\fancyfoot[C]{\thepage}
+
+% ── Títulos de sección ────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{azulBI}}{\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{azulBI!80}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% ── Cajas informativas ────────────────────────────────────────────────────────
+\tcbuselibrary{skins, breakable}
+\newtcolorbox{cajainfo}[1]{
+  colback=azulBI!5, colframe=azulBI,
+  fonttitle=\bfseries\small, title=#1,
+  breakable, left=6pt, right=6pt
+}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Título central ────────────────────────────────────────────────────────────
+\begin{center}
+    {\large\textbf{INFORME DE GU\'IA PR\'ACTICA}}
+\end{center}
+
+% ── Portada ───────────────────────────────────────────────────────────────────
+\section{Portada}
+\begin{flushleft}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{} l l @{}}
+    \textbf{Tema:}                              & Preparaci\'on de Datos para Machine Learning -- Sistema de Alquileres \\
+    \textbf{Unidad de Organizaci\'on Curricular:} & Profesional. \\
+    \textbf{Nivel y Paralelo:}                  & 5to - A \\
+    \textbf{Alumnos participantes:}             & Toala Camacho Steeven Santiago. \\
+    \textbf{Asignatura:}                        & Inteligencia de Negocios \\
+    \textbf{Docente:}                           & Ing. Hern\'an Naranjo. \\
+\end{tabular}
+\end{flushleft}
+
+% =============================================================================
+\section{Introducci\'on}
+% =============================================================================
+
+El presente informe documenta la implementaci\'on del m\'odulo de preparaci\'on de
+datos para Machine Learning dentro del proyecto de Sistema de Recomendaci\'on de
+Alquileres de Pel\'iculas, desarrollado en la materia de \textbf{Inteligencia
+de Negocios}.
+
+El m\'odulo est\'a compuesto por tres archivos Python que trabajan en cadena,
+cada uno con una responsabilidad bien definida:
+
+\begin{enumerate}
+  \item \textbf{\texttt{consultas\_clasificador.py}} --- Se conecta a MongoDB
+        y extrae los datos mediante pipelines de agregaci\'on.
+  \item \textbf{\texttt{dataframes\_bi.py}} --- Centraliza y limpia los
+        DataFrames para que est\'en listos en cualquier parte del proyecto.
+  \item \textbf{\texttt{clasificador\_binario.py}} --- Crea las variables
+        derivadas y las etiquetas que usar\'an los modelos de ML.
+\end{enumerate}
+
+\begin{cajainfo}{Arquitectura de dependencias}
+\centering
+\texttt{clasificador\_binario.py}
+$\longrightarrow$ \texttt{dataframes\_bi.py}
+$\longrightarrow$ \texttt{consultas\_clasificador.py}
+$\longrightarrow$ MongoDB (\texttt{BI\_Final.alquileres})
+\end{cajainfo}
+
+% =============================================================================
+\section{Archivo 1: \texttt{consultas\_clasificador.py}}
+% =============================================================================
+
+\subsection{Prop\'osito}
+
+Este archivo es el \'unico punto de contacto con la base de datos.
+Su responsabilidad es \textbf{conectarse a MongoDB y retornar DataFrames
+limpios}, sin que el resto del proyecto necesite conocer los detalles
+de la conexi\'on ni de la estructura de la colecci\'on.
+
+\subsection{Conexi\'on a MongoDB}
+
+\begin{lstlisting}[caption={Par\'ametros de conexi\'on}]
+MONGO_URI = "mongodb://localhost:27017/"
+DB_NAME   = "BI_Final"
+COLECCION = "alquileres"
+
+def _conectar():
+    client = MongoClient(MONGO_URI)
+    return client[DB_NAME][COLECCION]
+\end{lstlisting}
+
+\subsection{Consultas implementadas}
+
+\subsubsection{Consulta 1 --- Alquileres (tabla de hechos)}
+
+Trae un registro por alquiler con los cinco campos necesarios para ML.
+El pipeline usa \texttt{\$project} para seleccionar \'unicamente las
+columnas relevantes.
+
+\begin{table}[H]
+  \centering
+  \caption{Campos de \texttt{consulta\_alquileres()}}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Campo}            & \textbf{Tipo}  & \textbf{Descripci\'on} \\
+    \midrule
+    \texttt{cliente\_ref}      & string  & Identificador del cliente \\
+    \texttt{pelicula\_ref}     & string  & Identificador de la pel\'icula \\
+    \texttt{pelicula\_titulo}  & string  & T\'itulo legible \\
+    \texttt{categoria\_nombre} & string  & G\'enero o categor\'ia \\
+    \texttt{ingreso}           & float   & Monto cobrado \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+El operador \texttt{\$ifNull} permite que la consulta funcione aunque los
+documentos tengan estructuras distintas (el campo cliente puede llamarse
+\texttt{id\_cliente}, \texttt{cliente.id\_cliente} o
+\texttt{dimensiones.cliente.id\_cliente}).
+
+\begin{lstlisting}[caption={Fragmento del pipeline de alquileres}]
+pipeline = [
+    {
+        "$project": {
+            "_id": 0,
+            "cliente_ref": {
+                "$toString": {
+                    "$ifNull": [
+                        "$id_cliente",
+                        "$cliente.id_cliente",
+                        "$dimensiones.cliente.id_cliente"
+                    ]
+                }
+            },
+            "ingreso": {"$ifNull": ["$ingreso", 0]}
+        }
+    }
+]
+\end{lstlisting}
+
+\subsubsection{Consulta 2 --- Cat\'alogo de pel\'iculas}
+
+Retorna una fila por pel\'icula (sin duplicados) usando \texttt{\$group}.
+\'Util para mostrar metadatos del cat\'alogo disponible.
+
+\subsubsection{Consulta 3 --- Clientes \'unicos}
+
+Retorna el listado de clientes que alguna vez realizaron un alquiler,
+permitiendo conocer el universo total de clientes del negocio.
+
+\subsection{Funci\'on principal}
+
+\begin{lstlisting}[caption={Funci\'on que ejecuta las tres consultas}]
+def cargar_dataframes() -> dict:
+    df_alquileres = consulta_alquileres()
+    df_peliculas  = consulta_peliculas()
+    df_clientes   = consulta_clientes()
+    if df_alquileres.empty:
+        raise ValueError("No hay datos en MongoDB.")
+    return {
+        "df_alquileres": df_alquileres,
+        "df_peliculas":  df_peliculas,
+        "df_clientes":   df_clientes,
+    }
+\end{lstlisting}
+
+% =============================================================================
+\section{Archivo 2: \texttt{dataframes\_bi.py}}
+% =============================================================================
+
+\subsection{Prop\'osito}
+
+Actua como \textbf{fuente \'unica de datos} del proyecto. Cualquier m\'odulo
+importa desde aqu\'i sin necesidad de conocer c\'omo funciona MongoDB.
+
+\begin{lstlisting}[caption={C\'omo importar los DataFrames}]
+from dataframes_bi import df_alquileres, df_peliculas, df_clientes
+\end{lstlisting}
+
+\subsection{DataFrames disponibles}
+
+\begin{table}[H]
+  \centering
+  \caption{DataFrames expuestos por \texttt{dataframes\_bi.py}}
+  \begin{tabular}{lp{8cm}}
+    \toprule
+    \textbf{Variable}        & \textbf{Contenido} \\
+    \midrule
+    \texttt{df\_alquileres}  & Tabla de hechos. Un registro por alquiler. \\
+    \texttt{df\_peliculas}   & Cat\'alogo de pel\'iculas con t\'itulo y categor\'ia. \\
+    \texttt{df\_clientes}    & Lista de clientes \'unicos registrados. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Limpieza del campo \texttt{ingreso}}
+
+El campo \texttt{ingreso} llegaba desde MongoDB en formatos inconsistentes,
+produciendo valores err\'oneos como \texttt{38.559.032.846.715.300} al
+interpretar puntos como separadores de miles en lugar de decimales.
+
+La funci\'on \texttt{\_limpiar\_ingreso()} normaliza el valor seg\'un el
+formato detectado:
+
+\begin{table}[H]
+  \centering
+  \caption{Formatos que maneja la funci\'on de limpieza}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Valor original} & \textbf{Formato detectado}      & \textbf{Resultado} \\
+    \midrule
+    \texttt{"38.559"}       & Punto decimal europeo           & \texttt{38.559} \\
+    \texttt{"38,559.00"}    & Coma de miles, punto decimal    & \texttt{38559.00} \\
+    \texttt{"38.559.032"}   & M\'ultiples puntos = miles      & \texttt{38559.032} \\
+    \texttt{38.559}         & Ya es float                     & \texttt{38.559} \\
+    \texttt{null / NaN}     & Valor nulo                      & \texttt{0.0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{lstlisting}[caption={L\'ogica de limpieza de ingreso}]
+def _limpiar_ingreso(valor) -> float:
+    if pd.isna(valor):
+        return 0.0
+    if isinstance(valor, (int, float)):
+        return float(valor)
+    s = str(valor).strip().replace("$","").replace(" ","")
+    if "," in s and "." in s:
+        s = s.replace(",", "")
+    elif s.count(".") > 1:
+        partes = s.rsplit(".", 1)
+        s = partes[0].replace(".", "") + "." + partes[1]
+    try:
+        return float(s)
+    except ValueError:
+        return 0.0
+\end{lstlisting}
+
+% =============================================================================
+\section{Archivo 3: \texttt{clasificador\_binario.py}}
+% =============================================================================
+
+\subsection{Prop\'osito}
+
+Contiene la l\'ogica de \textbf{ingenier\'ia de caracter\'isticas} y la
+definici\'on de \textbf{etiquetas de negocio} para los modelos de ML.
+
+\begin{cajainfo}{Nota}
+Este archivo \textbf{no entrena ning\'un modelo}. Solo prepara el dataset
+con las etiquetas y lo exporta como CSV para el paso siguiente.
+\end{cajainfo}
+
+\subsection{Variables de apoyo}
+
+\begin{table}[H]
+  \centering
+  \caption{Variables calculadas como base para las etiquetas}
+  \begin{tabular}{lp{8cm}}
+    \toprule
+    \textbf{Variable}                   & \textbf{Descripci\'on} \\
+    \midrule
+    \texttt{veces\_alquilada\_pelicula}  & Cantidad de veces que fue alquilada cada pel\'icula. \\
+    \texttt{precio\_promedio\_genero}    & Ingreso promedio de todos los alquileres de ese g\'enero. \\
+    \texttt{codigo\_genero}              & N\'umero que representa el nombre del g\'enero (LabelEncoder). \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Etiquetas binarias}
+
+Las etiquetas toman el valor \textbf{0} (No) o \textbf{1} (S\'i).
+
+\subsubsection{Etiqueta 1 --- \texttt{ingreso\_alto}}
+
+\begin{cajainfo}{¿El alquiler gener\'o un ingreso alto?}
+  \textbf{C\'alculo:} ingreso $\geq$ percentil 75 dentro de su categor\'ia.\\[3pt]
+  \textbf{Valor:} detecta los alquileres m\'as rentables comparando
+  dentro del mismo g\'enero, sin mezclar categor\'ias de precios distintos.\\[3pt]
+  \textbf{Aplicaci\'on:} pricing din\'amico y campa\~nas por g\'enero.
+\end{cajainfo}
+
+\begin{lstlisting}[caption={C\'alculo de \texttt{ingreso\_alto}}]
+umbral = df.groupby("categoria_nombre")["ingreso"].transform(
+    lambda x: x.quantile(0.75)
+)
+df["ingreso_alto"] = (df["ingreso"] >= umbral).astype(int)
+\end{lstlisting}
+
+\subsubsection{Etiqueta 2 --- \texttt{pelicula\_popular}}
+
+\begin{cajainfo}{¿La pel\'icula tiene alta demanda?}
+  \textbf{C\'alculo:} \texttt{veces\_alquilada\_pelicula} $>$ mediana del cat\'alogo.\\[3pt]
+  \textbf{Valor:} identifica los t\'itulos que m\'as tr\'afico generan
+  y que conviene mantener siempre en stock.\\[3pt]
+  \textbf{Aplicaci\'on:} gesti\'on de inventario y vitrina.
+\end{cajainfo}
+
+\begin{lstlisting}[caption={C\'alculo de \texttt{pelicula\_popular}}]
+umbral = df["veces_alquilada_pelicula"].median()
+df["pelicula_popular"] = (
+    df["veces_alquilada_pelicula"] > umbral
+).astype(int)
+\end{lstlisting}
+
+\subsubsection{Etiqueta 3 --- \texttt{genero\_alto\_valor}}
+
+\begin{cajainfo}{¿El g\'enero es de alto valor econ\'omico?}
+  \textbf{C\'alculo:} \texttt{precio\_promedio\_genero} $\geq$ percentil 75 entre g\'enero.\\[3pt]
+  \textbf{Valor:} se\~nala los g\'eneros que histricamente generan m\'as
+  ingresos y en los que vale la pena invertir.\\[3pt]
+  \textbf{Aplicaci\'on:} estrategia de adquisici\'on de contenido y licencias.
+\end{cajainfo}
+
+\begin{lstlisting}[caption={C\'alculo de \texttt{genero\_alto\_valor}}]
+umbral = df["precio_promedio_genero"].quantile(0.75)
+df["genero_alto_valor"] = (
+    df["precio_promedio_genero"] >= umbral
+).astype(int)
+\end{lstlisting}
+
+\subsection{Variable continua para regresi\'on lineal}
+
+Adem\'as de las etiquetas binarias, la variable \textbf{ingreso} se usa
+como objetivo de un regresor lineal, que predice el monto exacto en lugar
+de clasificarlo.
+
+\begin{table}[H]
+  \centering
+  \caption{Clasificador binario vs.\ regresor lineal}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Modelo}      & \textbf{Pregunta}               & \textbf{Salida} \\
+    \midrule
+    Clasificador binario & ¿El ingreso es alto o bajo?     & \texttt{0} o \texttt{1} \\
+    Regresor lineal      & ¿Cu\'anto exactamente generar\'a? & ej.\ \texttt{4.25} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =============================================================================
+\section{Dataset de salida}
+% =============================================================================
+
+Al finalizar la ejecuci\'on se genera \texttt{alquileres\_etiquetados.csv}
+con las siguientes columnas:
+
+\begin{table}[H]
+  \centering
+  \caption{Columnas del dataset final}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Columna}                    & \textbf{Tipo}  & \textbf{Descripci\'on} \\
+    \midrule
+    \texttt{cliente\_ref}               & string  & ID del cliente \\
+    \texttt{pelicula\_ref}              & string  & ID de la pel\'icula \\
+    \texttt{pelicula\_titulo}           & string  & T\'itulo \\
+    \texttt{categoria\_nombre}          & string  & G\'enero \\
+    \texttt{ingreso}                    & float   & Monto del alquiler (limpio) \\
+    \texttt{veces\_alquilada\_pelicula} & int     & Alquileres del t\'itulo \\
+    \texttt{precio\_promedio\_genero}   & float   & Promedio del g\'enero \\
+    \texttt{codigo\_genero}             & int     & C\'odigo num\'erico \\
+    \texttt{ingreso\_alto}              & 0\,/\,1 & Etiqueta 1 \\
+    \texttt{pelicula\_popular}          & 0\,/\,1 & Etiqueta 2 \\
+    \texttt{genero\_alto\_valor}        & 0\,/\,1 & Etiqueta 3 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =============================================================================
+\section{Conclusiones}
+% =============================================================================
+
+\begin{enumerate}[leftmargin=*, label=\textbf{\arabic*.}]
+
+  \item La preparaci\'on y limpieza de datos es una etapa fundamental
+        en cualquier proyecto de Machine Learning. Sin datos correctos
+        y bien estructurados, los modelos no pueden aprender patrones
+        confiables, independientemente del algoritmo que se utilice.
+
+  \item Separar el proyecto en m\'odulos con responsabilidades claras
+        (consultas, datos, etiquetas) facilita su mantenimiento y permite
+        que distintos miembros del equipo trabajen en paralelo sin
+        afectar el trabajo de los dem\'as.
+
+  \item La definici\'on de etiquetas debe estar siempre guiada por el
+        contexto del negocio. Una etiqueta que no responde a una pregunta
+        \'util para la organizaci\'on no aporta valor, aunque el modelo
+        la aprenda perfectamente.
+
+  \item El uso de bases de datos NoSQL como MongoDB impone retos
+        adicionales de calidad de datos, ya que los documentos pueden
+        tener estructuras distintas. Es necesario anticipar y manejar
+        estos casos antes de procesar la informaci\'on.
+
+  \item La Inteligencia de Negocios y el Machine Learning son
+        complementarios: BI identifica los patrones y tendencias del
+        pasado, mientras que ML permite predecir comportamientos futuros
+        y automatizar decisiones basadas en datos.
+
+\end{enumerate}
+
+% =============================================================================
+\section{Recomendaciones}
+% =============================================================================
+
+\begin{enumerate}[leftmargin=*, label=\textbf{\arabic*.}]
+
+  \item \textbf{Validar siempre la calidad de los datos antes de entrenar.}
+        Antes de usar cualquier dataset para Machine Learning, es recomendable
+        revisar valores nulos, duplicados y formatos inconsistentes. Un paso
+        de exploraci\'on inicial (EDA) ahorra errores costosos m\'as adelante.
+
+  \item \textbf{Documentar las decisiones de negocio que definen las etiquetas.}
+        Los umbrales utilizados (percentil 75, mediana, etc.) deben quedar
+        registrados y justificados, ya que son decisiones que pueden cambiar
+        seg\'un las necesidades de la organizaci\'on.
+
+  \item \textbf{Mantener los m\'odulos desacoplados.}
+        Es buena pr\'actica que cada archivo tenga una sola responsabilidad
+        y que los cambios en uno no obliguen a modificar los dem\'as.
+        Esto aplica tanto en proyectos de BI como en desarrollo de software
+        en general.
+
+  \item \textbf{Versionar el dataset etiquetado.}
+        Guardar una copia del CSV con la fecha de generaci\'on permite
+        comparar resultados entre distintas versiones del modelo y reproducir
+        experimentos anteriores si es necesario.
+
+  \item \textbf{Considerar m\'etodos de validaci\'on cruzada al entrenar.}
+        Cuando se pase a la etapa de entrenamiento, se recomienda usar
+        t\'ecnicas como \textit{k-fold cross-validation} para obtener
+        estimaciones m\'as robustas del rendimiento de los modelos.
+
+\end{enumerate}
+
+\end{document}
