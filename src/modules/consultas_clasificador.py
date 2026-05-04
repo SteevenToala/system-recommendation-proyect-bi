@@ -1,21 +1,6 @@
-"""
-consultas_clasificador.py
-=========================
-Consultas MongoDB específicas para el módulo de clasificación (BI).
-
-Cada función ejecuta un pipeline de agregación y retorna un DataFrame
-limpio, listo para usar en dataframes_bi.py.
-
-Colección fuente: BI_Final.alquileres
-"""
-
 import pandas as pd
 from pymongo import MongoClient
 
-
-# =============================================================================
-# CONEXIÓN
-# =============================================================================
 
 MONGO_URI   = "mongodb://localhost:27017/"
 DB_NAME     = "BI_Final"
@@ -23,60 +8,35 @@ COLECCION   = "alquileres"
 
 
 def _conectar():
-    """Retorna la colección de alquileres de MongoDB."""
     client = MongoClient(MONGO_URI)
     return client[DB_NAME][COLECCION]
 
 
-# =============================================================================
-# CONSULTA 1 — Tabla de hechos: alquileres
-# Retorna un registro por alquiler con los campos necesarios para ML.
-# =============================================================================
-
 def consulta_alquileres() -> pd.DataFrame:
-    """
-    Trae todos los alquileres con:
-      - cliente_ref      : identificador del cliente
-      - pelicula_ref     : identificador de la película
-      - pelicula_titulo  : nombre de la película
-      - categoria_nombre : género / categoría de la película
-      - ingreso          : monto cobrado por el alquiler
-    """
     coleccion = _conectar()
 
     pipeline = [
-        # ── Proyectar solo los campos que necesitamos ──────────────────────
         {
             "$project": {
                 "_id": 0,
-
-                # Cliente: busca el campo en varias ubicaciones posibles
                 "cliente_ref": {
-                    "$toString": {
-                        "$ifNull": [
-                            "$id_cliente",
-                            "$cliente.id_cliente",
-                            "$cliente_nombre_completo",
-                            "$cliente.nombre_completo",
-                            "$dimensiones.cliente.id_cliente"
-                        ]
-                    }
+                    "$ifNull": [
+                        "$cliente_nombre_completo",
+                        "$cliente.nombre_completo",
+                        "$dimensiones.cliente.nombre_completo",
+                        "$cliente.nombre",
+                        "$dimensiones.cliente.nombre",
+                        {"$toString": {"$ifNull": ["$id_cliente", "$cliente.id_cliente", "$dimensiones.cliente.id_cliente"]}}
+                    ]
                 },
-
-                # Película: identificador único
                 "pelicula_ref": {
-                    "$toString": {
-                        "$ifNull": [
-                            "$id_pelicula",
-                            "$pelicula.id_pelicula",
-                            "$pelicula_titulo",
-                            "$pelicula.titulo",
-                            "$dimensiones.pelicula.id_pelicula"
-                        ]
-                    }
+                    "$ifNull": [
+                        "$pelicula_titulo",
+                        "$pelicula.titulo",
+                        "$dimensiones.pelicula.titulo",
+                        {"$toString": {"$ifNull": ["$id_pelicula", "$pelicula.id_pelicula", "$dimensiones.pelicula.id_pelicula"]}}
+                    ]
                 },
-
-                # Película: título legible
                 "pelicula_titulo": {
                     "$ifNull": [
                         "$pelicula_titulo",
@@ -84,8 +44,6 @@ def consulta_alquileres() -> pd.DataFrame:
                         "$dimensiones.pelicula.titulo"
                     ]
                 },
-
-                # Categoría / género de la película
                 "categoria_nombre": {
                     "$ifNull": [
                         "$categoria_nombre",
@@ -94,8 +52,6 @@ def consulta_alquileres() -> pd.DataFrame:
                         "Sin categoria"
                     ]
                 },
-
-                # Ingreso generado por el alquiler
                 "ingreso": {
                     "$ifNull": ["$ingreso", 0]
                 }
@@ -106,7 +62,6 @@ def consulta_alquileres() -> pd.DataFrame:
     registros = list(coleccion.aggregate(pipeline))
     df = pd.json_normalize(registros)
 
-    # Limpiar tipos
     df["cliente_ref"]      = df["cliente_ref"].astype(str)
     df["pelicula_ref"]     = df["pelicula_ref"].astype(str)
     df["pelicula_titulo"]  = df["pelicula_titulo"].astype(str)
@@ -116,33 +71,19 @@ def consulta_alquileres() -> pd.DataFrame:
     return df
 
 
-# =============================================================================
-# CONSULTA 2 — Catálogo de películas
-# Una fila por película con sus metadatos (sin duplicados).
-# =============================================================================
-
 def consulta_peliculas() -> pd.DataFrame:
-    """
-    Retorna el catálogo de películas con:
-      - pelicula_ref     : identificador único
-      - pelicula_titulo  : nombre
-      - categoria_nombre : género / categoría
-    """
     coleccion = _conectar()
 
     pipeline = [
-        # Agrupar por película para eliminar duplicados
         {
             "$group": {
                 "_id": {
-                    "$toString": {
-                        "$ifNull": [
-                            "$id_pelicula",
-                            "$pelicula.id_pelicula",
-                            "$pelicula_titulo",
-                            "$dimensiones.pelicula.id_pelicula"
-                        ]
-                    }
+                    "$ifNull": [
+                        "$pelicula_titulo",
+                        "$pelicula.titulo",
+                        "$dimensiones.pelicula.titulo",
+                        {"$toString": {"$ifNull": ["$id_pelicula", "$pelicula.id_pelicula", "$dimensiones.pelicula.id_pelicula"]}}
+                    ]
                 },
                 "pelicula_titulo": {
                     "$first": {
@@ -165,7 +106,6 @@ def consulta_peliculas() -> pd.DataFrame:
                 }
             }
         },
-        # Renombrar _id → pelicula_ref y ordenar
         {
             "$project": {
                 "_id": 0,
@@ -187,31 +127,21 @@ def consulta_peliculas() -> pd.DataFrame:
     return df
 
 
-# =============================================================================
-# CONSULTA 3 — Listado de clientes únicos
-# =============================================================================
-
 def consulta_clientes() -> pd.DataFrame:
-    """
-    Retorna la lista de clientes únicos con:
-      - cliente_ref : identificador único del cliente
-    """
     coleccion = _conectar()
 
     pipeline = [
-        # Agrupar por cliente para obtener IDs únicos
         {
             "$group": {
                 "_id": {
-                    "$toString": {
-                        "$ifNull": [
-                            "$id_cliente",
-                            "$cliente.id_cliente",
-                            "$cliente_nombre_completo",
-                            "$cliente.nombre_completo",
-                            "$dimensiones.cliente.id_cliente"
-                        ]
-                    }
+                    "$ifNull": [
+                        "$cliente_nombre_completo",
+                        "$cliente.nombre_completo",
+                        "$dimensiones.cliente.nombre_completo",
+                        "$cliente.nombre",
+                        "$dimensiones.cliente.nombre",
+                        {"$toString": {"$ifNull": ["$id_cliente", "$cliente.id_cliente", "$dimensiones.cliente.id_cliente"]}}
+                    ]
                 }
             }
         },
@@ -231,19 +161,7 @@ def consulta_clientes() -> pd.DataFrame:
     return df
 
 
-# =============================================================================
-# FUNCIÓN PRINCIPAL — carga los tres DataFrames de una vez
-# =============================================================================
-
 def cargar_dataframes() -> dict:
-    """
-    Ejecuta las tres consultas y retorna un diccionario con los DataFrames.
-
-    Uso:
-        from consultas_clasificador import cargar_dataframes
-        datos = cargar_dataframes()
-        df = datos["df_alquileres"]
-    """
     df_alquileres = consulta_alquileres()
     df_peliculas  = consulta_peliculas()
     df_clientes   = consulta_clientes()
@@ -257,10 +175,6 @@ def cargar_dataframes() -> dict:
         "df_clientes":   df_clientes,
     }
 
-
-# =============================================================================
-# EJECUCIÓN DIRECTA — imprime resumen de cada DataFrame
-# =============================================================================
 
 if __name__ == "__main__":
     print("Conectando a MongoDB y ejecutando consultas...\n")
