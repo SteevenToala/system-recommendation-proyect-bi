@@ -48,14 +48,14 @@ normal en cada caso.
 \begin{enumerate}[label=\arabic*.]
   \item Enumerar las $2^N$ dic\'otom\'ias posibles de cada conjunto.
   \item Verificar la separabilidad lineal de cada dic\'otom\'ia.
-  \item Graficar la frontera de decisi\'on $h(\mathbf{x})$ y el vector normal $\mathbf{w}$.
+  \item Graficar la l\'inea de separaci\'on $h(\mathbf{x})$ y el vector normal $\mathbf{w}$.
   \item Analizar la funci\'on utilizada en cada hip\'otesis v\'alida.
 \end{enumerate}
 \section{Introducci\'on}
 Una \textbf{hip\'otesis dic\'otomica} es una funci\'on $h:\mathcal{X}\to\{0,1\}$
 que separa el espacio en dos clases. El clasificador lineal en 2D implementa:
 \[ h(\mathbf{x}) = \begin{cases} 1 & \text{si } w_1 x_1 + w_2 x_2 + b \geq 0 \\ 0 & \text{si no} \end{cases} \]
-La recta $w_1 x_1 + w_2 x_2 + b = 0$ es la \textbf{frontera de decisi\'on}.
+La recta $w_1 x_1 + w_2 x_2 + b = 0$ es la \textbf{l\'inea de separaci\'on}.
 El vector $\mathbf{w}=(w_1,w_2)$ es \textbf{perpendicular} a dicha recta y
 apunta hacia la regi\'on de clase~1.
 
@@ -120,7 +120,7 @@ apunta hacia la regi\'on de clase~1.
 \textbf{An\'alisis:}
 \begin{itemize}
   \item Esta hip\'otesis es \textbf{trivial}: todos los puntos pertenecen a la misma clase.
-  \item No existe frontera de decisi\'on expl\'icita.
+  \item No existe l\'inea de separaci\'on expl\'icita.
 \end{itemize}
 
 \subsubsection{Hip\'otesis $H_{2}$: etiquetas [0, 0, 0, 1]}
@@ -143,7 +143,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $-1.00 x_1 + 1.00 x_2 - 1.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-1.000, 1.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 135.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{4}$
 \end{itemize}
@@ -168,7 +168,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $2.00 x_1 - 1.00 x_2 - 5.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (2.000, -1.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 333.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{3}$
 \end{itemize}
@@ -193,7 +193,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $0.50 x_1 + 0.50 x_2 - 5.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.500, 0.500)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 45.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{3}$, $X_{4}$
 \end{itemize}
@@ -218,7 +218,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $3.00 x_1 - 2.00 x_2 - 3.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (3.000, -2.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 326.3 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{3}$
 \end{itemize}
@@ -243,7 +243,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $0.50 x_1 + 0.50 x_2 - 3.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.500, 0.500)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 45.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{3}$, $X_{4}$
 \end{itemize}
@@ -268,7 +268,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $-0.50 x_1 - 0.50 x_2 + 3.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.500, -0.500)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 225.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{3}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$
 \end{itemize}
@@ -293,7 +293,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $-3.00 x_1 + 2.00 x_2 + 3.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-3.000, 2.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 146.3 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{4}$
 \end{itemize}
@@ -318,7 +318,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $-0.50 x_1 - 0.50 x_2 + 5.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.500, -0.500)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 225.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{3}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$
 \end{itemize}
@@ -343,7 +343,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $-2.00 x_1 + 1.00 x_2 + 5.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-2.000, 1.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 153.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{4}$
 \end{itemize}
@@ -368,7 +368,7 @@ apunta hacia la regi\'on de clase~1.
   \item \textbf{Funci\'on separadora:} $1.00 x_1 - 1.00 x_2 + 1.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (1.000, -1.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 315.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{3}$
 \end{itemize}
@@ -391,7 +391,7 @@ apunta hacia la regi\'on de clase~1.
 \textbf{An\'alisis:}
 \begin{itemize}
   \item Esta hip\'otesis es \textbf{trivial}: todos los puntos pertenecen a la misma clase.
-  \item No existe frontera de decisi\'on expl\'icita.
+  \item No existe l\'inea de separaci\'on expl\'icita.
 \end{itemize}
 
 \subsection{Hip\'otesis NO Linealmente Separables}
@@ -477,7 +477,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
 \textbf{An\'alisis:}
 \begin{itemize}
   \item Esta hip\'otesis es \textbf{trivial}: todos los puntos pertenecen a la misma clase.
-  \item No existe frontera de decisi\'on expl\'icita.
+  \item No existe l\'inea de separaci\'on expl\'icita.
 \end{itemize}
 
 \subsubsection{Hip\'otesis $H_{2}$: etiquetas [0, 0, 0, 1]}
@@ -500,7 +500,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.33 x_1 + 0.33 x_2 - 4.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.333, 0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 45.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{4}$
 \end{itemize}
@@ -525,7 +525,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.33 x_1 - 0.67 x_2 - 0.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.333, -0.667)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 296.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{3}$
 \end{itemize}
@@ -550,7 +550,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.33 x_1 - 0.00 x_2 - 1.67 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.333, -0.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 360.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{3}$, $X_{4}$
 \end{itemize}
@@ -575,7 +575,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.67 x_1 + 0.33 x_2 - 0.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.667, 0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 153.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{3}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$
 \end{itemize}
@@ -600,7 +600,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.00 x_1 + 0.33 x_2 - 1.67 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.000, 0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 90.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{4}$
 \end{itemize}
@@ -625,7 +625,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.33 x_1 + 0.33 x_2 - 2.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.333, 0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 45.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{3}$, $X_{4}$
 \end{itemize}
@@ -650,7 +650,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.33 x_1 - 0.33 x_2 + 2.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.333, -0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 225.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{3}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$
 \end{itemize}
@@ -675,7 +675,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.00 x_1 - 0.33 x_2 + 1.67 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.000, -0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 270.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{3}$
 \end{itemize}
@@ -700,7 +700,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.67 x_1 - 0.33 x_2 + 0.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.667, -0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 333.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{3}$, $X_{4}$
 \end{itemize}
@@ -725,7 +725,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.33 x_1 + 0.00 x_2 + 1.67 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.333, 0.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 180.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{3}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$
 \end{itemize}
@@ -750,7 +750,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.33 x_1 + 0.67 x_2 + 0.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.333, 0.667)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 116.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{4}$
 \end{itemize}
@@ -775,7 +775,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.33 x_1 - 0.33 x_2 + 4.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.333, -0.333)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 225.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{3}$
 \end{itemize}
@@ -798,7 +798,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
 \textbf{An\'alisis:}
 \begin{itemize}
   \item Esta hip\'otesis es \textbf{trivial}: todos los puntos pertenecen a la misma clase.
-  \item No existe frontera de decisi\'on expl\'icita.
+  \item No existe l\'inea de separaci\'on expl\'icita.
 \end{itemize}
 
 \subsection{Hip\'otesis NO Linealmente Separables}
@@ -891,7 +891,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
 \textbf{An\'alisis:}
 \begin{itemize}
   \item Esta hip\'otesis es \textbf{trivial}: todos los puntos pertenecen a la misma clase.
-  \item No existe frontera de decisi\'on expl\'icita.
+  \item No existe l\'inea de separaci\'on expl\'icita.
 \end{itemize}
 
 \subsubsection{Hip\'otesis $H_{2}$: etiquetas [0, 0, 0, 0, 1]}
@@ -915,7 +915,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.50 x_1 - 1.00 x_2 - 0.50 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.500, -1.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 296.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{3}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{5}$
 \end{itemize}
@@ -941,7 +941,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.86 x_1 + 0.29 x_2 - 7.57 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.857, 0.286)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 18.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{3}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{4}$
 \end{itemize}
@@ -967,7 +967,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.55 x_1 - 0.18 x_2 - 2.27 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.545, -0.182)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 341.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{4}$, $X_{5}$
 \end{itemize}
@@ -993,7 +993,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-6.00 x_1 + 2.00 x_2 + 13.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-6.000, 2.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 161.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{2}$, $X_{4}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{3}$
 \end{itemize}
@@ -1019,7 +1019,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-2.89 x_1 + 2.44 x_2 - 4.11 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-2.889, 2.444)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 139.8 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{3}$, $X_{4}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$
 \end{itemize}
@@ -1045,7 +1045,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.50 x_1 + 0.75 x_2 - 7.50 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.500, 0.750)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 56.3 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{3}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{4}$
 \end{itemize}
@@ -1071,7 +1071,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $1.20 x_1 + 0.40 x_2 - 8.20 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (1.200, 0.400)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 18.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{4}$, $X_{5}$
 \end{itemize}
@@ -1097,7 +1097,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.67 x_1 + 0.67 x_2 - 0.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.667, 0.667)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 135.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{4}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{3}$
 \end{itemize}
@@ -1123,7 +1123,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.13 x_1 + 0.67 x_2 - 1.93 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.133, 0.667)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 101.3 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{3}$, $X_{4}$
 \end{itemize}
@@ -1149,7 +1149,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.50 x_1 + 0.37 x_2 - 3.25 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.500, 0.375)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 36.9 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci'on respecto a la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). La clase~1 se encuentra en esa direcci\'on respecto a la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{1}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{2}$, $X_{3}$, $X_{4}$, $X_{5}$
 \end{itemize}
@@ -1175,7 +1175,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.50 x_1 - 0.37 x_2 + 3.25 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.500, -0.375)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 216.9 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{3}$, $X_{4}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$
 \end{itemize}
@@ -1201,7 +1201,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.13 x_1 - 0.67 x_2 + 1.93 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.133, -0.667)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 281.3 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{3}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{5}$
 \end{itemize}
@@ -1227,7 +1227,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $0.67 x_1 - 0.67 x_2 + 0.33 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (0.667, -0.667)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 315.0 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{4}$, $X_{5}$
 \end{itemize}
@@ -1253,7 +1253,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-1.20 x_1 - 0.40 x_2 + 8.20 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-1.200, -0.400)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 198.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{4}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{3}$
 \end{itemize}
@@ -1279,7 +1279,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.50 x_1 - 0.75 x_2 + 7.50 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.500, -0.750)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 236.3 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$, $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{3}$, $X_{5}$
 \end{itemize}
@@ -1305,7 +1305,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $2.89 x_1 - 2.44 x_2 + 4.11 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (2.889, -2.444)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 319.8 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{2}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{3}$, $X_{4}$, $X_{5}$
 \end{itemize}
@@ -1331,7 +1331,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $6.00 x_1 - 2.00 x_2 - 13.00 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (6.000, -2.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 341.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-derecha.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-derecha.
   \item \textbf{Clase 0} (lado negativo): $X_{3}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{4}$, $X_{5}$
 \end{itemize}
@@ -1357,7 +1357,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.55 x_1 + 0.18 x_2 + 2.27 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.545, 0.182)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 161.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{4}$, $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{3}$
 \end{itemize}
@@ -1383,7 +1383,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.86 x_1 - 0.29 x_2 + 7.57 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.857, -0.286)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 198.4 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi'on inferior-izquierda.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). La clase~1 se encuentra en la regi\'on inferior-izquierda.
   \item \textbf{Clase 0} (lado negativo): $X_{4}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{3}$, $X_{5}$
 \end{itemize}
@@ -1409,7 +1409,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
   \item \textbf{Funci\'on separadora:} $-0.50 x_1 + 1.00 x_2 + 0.50 = 0$
   \item \textbf{Vector normal:} $\mathbf{w} = (-0.500, 1.000)$, perpendicular a la recta.
   \item \textbf{\'Angulo:} $\theta = 116.6 grados$.
-  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la frontera.
+  \item \textbf{Direcci\'on de $\mathbf{w}$:} El vector $\mathbf{w}$ apunta hacia el \textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). La clase~1 se encuentra a la izquierda y arriba de la l\'inea de separaci\'on.
   \item \textbf{Clase 0} (lado negativo): $X_{5}$
   \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): $X_{1}$, $X_{2}$, $X_{3}$, $X_{4}$
 \end{itemize}
@@ -1433,7 +1433,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
 \textbf{An\'alisis:}
 \begin{itemize}
   \item Esta hip\'otesis es \textbf{trivial}: todos los puntos pertenecen a la misma clase.
-  \item No existe frontera de decisi\'on expl\'icita.
+  \item No existe l\'inea de separaci\'on expl\'icita.
 \end{itemize}
 
 \subsection{Hip\'otesis NO Linealmente Separables}
@@ -1517,7 +1517,7 @@ por ning\'un clasificador lineal sobre este conjunto de puntos.
 
 \section{Conclusiones}
 \begin{enumerate}
-  \item El vector $\mathbf{w}$ es siempre perpendicular a la frontera de decisi\'on
+  \item El vector $\mathbf{w}$ es siempre perpendicular a la l\'inea de separaci\'on
         y apunta hacia la regi\'on de clase~1.
   \item El \'angulo $\theta$ indica la orientaci\'on positiva de la hip\'otesis.
   \item Configuraciones como el XOR no son linealmente separables y

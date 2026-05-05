@@ -199,11 +199,11 @@ def interpretar_angulo(ang_str):
     try:
         ang = float(ang_str.replace(" grados", ""))
     except ValueError:
-        return "direcci\'on no determinada."
+        return "direcci\\'on no determinada."
     if 0 <= ang < 90:
         return ("El vector $\\mathbf{w}$ apunta hacia el "
                 "\\textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). "
-                "La clase~1 se encuentra en esa direcci\'on respecto a la frontera.")
+                "La clase~1 se encuentra en esa direcci\\'on respecto a la frontera.")
     elif ang < 180:
         return ("El vector $\\mathbf{w}$ apunta hacia el "
                 "\\textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). "
@@ -211,11 +211,11 @@ def interpretar_angulo(ang_str):
     elif ang < 270:
         return ("El vector $\\mathbf{w}$ apunta hacia el "
                 "\\textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). "
-                "La clase~1 se encuentra en la regi\'on inferior-izquierda.")
+                "La clase~1 se encuentra en la regi\\'on inferior-izquierda.")
     else:
         return ("El vector $\\mathbf{w}$ apunta hacia el "
                 "\\textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). "
-                "La clase~1 se encuentra en la regi\'on inferior-derecha.")
+                "La clase~1 se encuentra en la regi\\'on inferior-derecha.")
 
 
 # ── dibujo para hipotesis NO separables ───────────────────────────────────────
@@ -520,7 +520,28 @@ with open(TEX, "w", encoding="utf-8") as f:
     wl(f, r"\end{enumerate}")
     wl(f, r"\end{document}")
 
+# ── Post-proceso: corregir acentos y vocabulario en el .tex generado ──────────
+BS = chr(92); AP = chr(39)
+with open(TEX, encoding="utf-8") as _f:
+    _tex = _f.read()
+
+# 1. Corregir doble backslash en acentos LaTeX: \\' → \'
+_count = _tex.count(BS + BS + AP)
+_tex = _tex.replace(BS + BS + AP, BS + AP)
+
+# 2. Reemplazar "frontera" por "linea de separacion"
+_tex = _tex.replace("frontera de decisi\\'on", "l\\'inea de separaci\\'on")
+_tex = _tex.replace("Frontera de decisi\\'on", "L\\'inea de separaci\\'on")
+_tex = _tex.replace("frontera de Decisi\\'on", "L\\'inea de Separaci\\'on")
+_tex = _tex.replace("frontera",                "l\\'inea de separaci\\'on")
+_tex = _tex.replace("Frontera",                "L\\'inea de separaci\\'on")
+
+with open(TEX, "w", encoding="utf-8") as _f:
+    _f.write(_tex)
+
 print("\nInforme:", TEX)
+print("Acentos corregidos:", _count, "| 'frontera' reemplazada por 'linea de separacion'")
 print("Compila con:")
 print("  pdflatex informe_hipotesis.tex")
 print("  pdflatex informe_hipotesis.tex")
+
