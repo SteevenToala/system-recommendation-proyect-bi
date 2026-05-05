@@ -1,0 +1,287 @@
+"""Genera eda_alquileres.ipynb listo para Anaconda/Jupyter."""
+import json, pathlib
+
+cells = []
+
+def md(*lines):
+    cells.append({"cell_type":"markdown","metadata":{},"source": list(lines)})
+
+def code(*lines):
+    cells.append({"cell_type":"code","execution_count":None,
+                  "metadata":{},"outputs":[],"source": list(lines)})
+
+# ─── Celda 0: titulo ──────────────────────────────────────────────────────────
+md(
+    "# EDA — Exploratorio para Machine Learning\n",
+    "**Dataset:** `alquileres_etiquetados.csv` (16 044 registros)  \n",
+    "Ejecuta cada celda con **Shift + Enter**",
+)
+
+# ─── Celda 1: imports ─────────────────────────────────────────────────────────
+code(
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "import matplotlib.ticker as mticker\n",
+    "import seaborn as sns\n",
+    "from scipy.stats import gaussian_kde\n",
+    "from pathlib import Path\n",
+    "\n",
+    "sns.set_theme(style='darkgrid', font_scale=1.05)\n",
+    "BG = '#12121f'; PANEL = '#1c1c2e'\n",
+    "C  = ['#7c6af7','#f97316','#22d3ee','#a3e635','#f43f5e','#fb923c','#34d399','#818cf8']\n",
+    "plt.rcParams.update({\n",
+    "    'figure.facecolor': BG, 'axes.facecolor': PANEL,\n",
+    "    'axes.labelcolor': 'white', 'xtick.color': 'white',\n",
+    "    'ytick.color': 'white',  'text.color': 'white',\n",
+    "    'axes.titlecolor': 'white', 'grid.color': '#2e2e4e',\n",
+    "    'legend.facecolor': PANEL, 'figure.dpi': 100,\n",
+    "})\n",
+    "print('Librerias cargadas OK')",
+)
+
+# ─── Celda 2: carga ───────────────────────────────────────────────────────────
+md("## 1. Carga y resumen del dataset")
+code(
+    "CSV_PATH = Path(r'D:/Proyectos/BI/10clase/sistemas_de_recomendacion/src/modules/alquileres_etiquetados.csv')\n",
+    "df = pd.read_csv(CSV_PATH)\n",
+    "FEATURES = ['ingreso', 'veces_alquilada_pelicula', 'precio_promedio_genero']\n",
+    "LABELS   = ['ingreso_alto', 'pelicula_popular', 'genero_alto_valor']\n",
+    "ALIAS    = {'ingreso_alto':'Ingreso Alto',\n",
+    "            'pelicula_popular':'Pelicula Popular',\n",
+    "            'genero_alto_valor':'Genero Alto Valor'}\n",
+    "print(f'{df.shape[0]:,} filas x {df.shape[1]} columnas')\n",
+    "df.head(10)",
+)
+
+code("df[FEATURES + LABELS].describe().round(3)")
+
+# ─── Celda 3: Histograma + KDE ────────────────────────────────────────────────
+md("## 2. Distribucion de Features (Histograma + KDE)")
+code(
+    "fig, axes = plt.subplots(1, 3, figsize=(16, 5))\n",
+    "fig.suptitle('Distribucion de Features Numericas', fontsize=14, fontweight='bold')\n",
+    "for ax, col, color in zip(axes, FEATURES, C):\n",
+    "    data = df[col].dropna()\n",
+    "    ax.hist(data, bins=30, color=color, alpha=0.55, edgecolor=BG, density=True)\n",
+    "    kde = gaussian_kde(data)\n",
+    "    x = np.linspace(data.min(), data.max(), 300)\n",
+    "    ax.plot(x, kde(x), color='white', linewidth=2, label='KDE')\n",
+    "    ax.axvline(data.mean(),   color=C[1], lw=1.8, ls='--', label=f'Media {data.mean():.2f}')\n",
+    "    ax.axvline(data.median(), color=C[3], lw=1.8, ls=':',  label=f'Mediana {data.median():.2f}')\n",
+    "    ax.set_title(col, fontweight='bold')\n",
+    "    ax.set_xlabel('Valor')\n",
+    "    ax.set_ylabel('Densidad')\n",
+    "    ax.legend(fontsize=8)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 4: ECDF ────────────────────────────────────────────────────────────
+md("## 3. Funcion de Distribucion Acumulada (ECDF)")
+code(
+    "fig, axes = plt.subplots(1, 3, figsize=(16, 5))\n",
+    "fig.suptitle('ECDF por Feature', fontsize=14, fontweight='bold')\n",
+    "for ax, col, color in zip(axes, FEATURES, C):\n",
+    "    data = np.sort(df[col].dropna().values)\n",
+    "    y    = np.arange(1, len(data) + 1) / len(data)\n",
+    "    ax.plot(data, y, color=color, linewidth=2.2)\n",
+    "    ax.fill_between(data, y, alpha=0.12, color=color)\n",
+    "    ax.axhline(0.25, color='white', lw=1,   ls='--', alpha=0.5, label='Q1  25%')\n",
+    "    ax.axhline(0.50, color=C[1],   lw=1.5, ls='--',             label='Mediana 50%')\n",
+    "    ax.axhline(0.75, color=C[3],   lw=1,   ls='--', alpha=0.5, label='Q3  75%')\n",
+    "    ax.set_title(f'ECDF — {col}', fontweight='bold')\n",
+    "    ax.set_xlabel('Valor'); ax.set_ylabel('Prob. acumulada')\n",
+    "    ax.set_ylim(0, 1); ax.legend(fontsize=8)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 5: Balance clases ──────────────────────────────────────────────────
+md("## 4. Balance de Clases")
+code(
+    "fig, axes = plt.subplots(1, 3, figsize=(13, 5))\n",
+    "fig.suptitle('Balance de Clases — Etiquetas Target', fontsize=14, fontweight='bold')\n",
+    "for ax, label in zip(axes, LABELS):\n",
+    "    counts = df[label].value_counts().sort_index()\n",
+    "    pcts   = counts / counts.sum() * 100\n",
+    "    bars   = ax.bar(['Clase 0', 'Clase 1'], counts.values,\n",
+    "                    color=[C[4], C[0]], edgecolor=BG, width=0.5)\n",
+    "    for bar, pct in zip(bars, pcts):\n",
+    "        ax.text(bar.get_x() + bar.get_width()/2,\n",
+    "                bar.get_height() + 50,\n",
+    "                f'{pct:.1f}%', ha='center', fontsize=12,\n",
+    "                fontweight='bold', color='white')\n",
+    "    ratio = counts[0] / counts[1]\n",
+    "    ax.set_title(f'{ALIAS[label]}\\nratio desbalance {ratio:.1f}:1',\n",
+    "                 fontsize=10, fontweight='bold')\n",
+    "    ax.set_ylabel('Cantidad')\n",
+    "    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda v,_: f'{int(v):,}'))\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 6: Boxplot ─────────────────────────────────────────────────────────
+md("## 5. Boxplot: Separacion entre Clases")
+code(
+    "fig, axes = plt.subplots(3, 3, figsize=(15, 12))\n",
+    "fig.suptitle('Boxplot: Feature por Clase (3 labels x 3 features)', fontsize=14, fontweight='bold')\n",
+    "for row, label in enumerate(LABELS):\n",
+    "    for col, feature in enumerate(FEATURES):\n",
+    "        ax = axes[row][col]\n",
+    "        g0 = df[df[label] == 0][feature].values\n",
+    "        g1 = df[df[label] == 1][feature].values\n",
+    "        bp = ax.boxplot([g0, g1], patch_artist=True,\n",
+    "                        medianprops=dict(color='white', linewidth=2.2),\n",
+    "                        flierprops=dict(marker='.', color='#ffffff44', markersize=2))\n",
+    "        bp['boxes'][0].set_facecolor(C[4]); bp['boxes'][0].set_alpha(0.75)\n",
+    "        bp['boxes'][1].set_facecolor(C[0]); bp['boxes'][1].set_alpha(0.75)\n",
+    "        ax.set_xticklabels(['Clase 0', 'Clase 1'])\n",
+    "        ax.set_title(f'{ALIAS[label]}\\nvs {feature}', fontsize=8)\n",
+    "        if col == 0: ax.set_ylabel(feature)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 7: Violin ──────────────────────────────────────────────────────────
+md("## 6. Violin Plot: Densidad por Clase")
+code(
+    "fig, axes = plt.subplots(3, 3, figsize=(15, 12))\n",
+    "fig.suptitle('Violin Plot: Densidad por Clase', fontsize=14, fontweight='bold')\n",
+    "for row, label in enumerate(LABELS):\n",
+    "    for col, feature in enumerate(FEATURES):\n",
+    "        ax = axes[row][col]\n",
+    "        g0 = df[df[label] == 0][feature].dropna().values\n",
+    "        g1 = df[df[label] == 1][feature].dropna().values\n",
+    "        vp = ax.violinplot([g0, g1], positions=[1, 2], showmedians=True)\n",
+    "        vp['bodies'][0].set_facecolor(C[4]); vp['bodies'][0].set_alpha(0.65)\n",
+    "        vp['bodies'][1].set_facecolor(C[0]); vp['bodies'][1].set_alpha(0.65)\n",
+    "        vp['cmedians'].set_color('white'); vp['cmedians'].set_linewidth(2)\n",
+    "        ax.set_xticks([1, 2]); ax.set_xticklabels(['Clase 0', 'Clase 1'])\n",
+    "        ax.set_title(f'{ALIAS[label]}\\nvs {feature}', fontsize=8)\n",
+    "        if col == 0: ax.set_ylabel(feature)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 8: Histogramas superpuestos ────────────────────────────────────────
+md("## 7. Histogramas Superpuestos (Clase 0 vs Clase 1)")
+code(
+    "fig, axes = plt.subplots(3, 3, figsize=(15, 12))\n",
+    "fig.suptitle('Histogramas Superpuestos por Clase', fontsize=14, fontweight='bold')\n",
+    "for row, label in enumerate(LABELS):\n",
+    "    for col, feature in enumerate(FEATURES):\n",
+    "        ax = axes[row][col]\n",
+    "        for val, color, lbl in [(0, C[4], 'Clase 0'), (1, C[0], 'Clase 1')]:\n",
+    "            data = df[df[label] == val][feature].dropna()\n",
+    "            ax.hist(data, bins=25, alpha=0.55, color=color,\n",
+    "                    edgecolor=BG, density=True, label=lbl)\n",
+    "        ax.set_title(f'{ALIAS[label]}\\n{feature}', fontsize=8)\n",
+    "        ax.set_xlabel(feature); ax.legend(fontsize=8)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 9: Correlacion ─────────────────────────────────────────────────────
+md("## 8. Mapa de Correlacion (Pearson y Spearman)")
+code(
+    "cols_corr = FEATURES + LABELS\n",
+    "fig, axes = plt.subplots(1, 2, figsize=(15, 6))\n",
+    "fig.suptitle('Correlacion Pearson vs Spearman', fontsize=14, fontweight='bold')\n",
+    "for ax, method in zip(axes, ['pearson', 'spearman']):\n",
+    "    corr = df[cols_corr].corr(method=method)\n",
+    "    mask = np.triu(np.ones_like(corr, dtype=bool))\n",
+    "    sns.heatmap(corr, mask=mask, annot=True, fmt='.2f', cmap='coolwarm',\n",
+    "                linewidths=0.5, linecolor=BG, annot_kws={'size': 9},\n",
+    "                cbar_kws={'shrink': 0.75}, ax=ax)\n",
+    "    ax.set_title(f'Correlacion {method.capitalize()}', fontweight='bold')\n",
+    "    ax.set_xticklabels(ax.get_xticklabels(), rotation=35, ha='right', fontsize=8)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 10: Outliers ───────────────────────────────────────────────────────
+md("## 9. Deteccion de Outliers (regla IQR)")
+code(
+    "fig, axes = plt.subplots(1, 3, figsize=(15, 5))\n",
+    "fig.suptitle('Deteccion de Outliers — Regla IQR', fontsize=14, fontweight='bold')\n",
+    "for ax, feature, color in zip(axes, FEATURES, C):\n",
+    "    data = df[feature].dropna()\n",
+    "    Q1, Q3 = data.quantile(0.25), data.quantile(0.75)\n",
+    "    IQR = Q3 - Q1\n",
+    "    low, high = Q1 - 1.5*IQR, Q3 + 1.5*IQR\n",
+    "    outliers = data[(data < low) | (data > high)]\n",
+    "    normal   = data[(data >= low) & (data <= high)]\n",
+    "    pct = len(outliers) / len(data) * 100\n",
+    "    ax.scatter(range(len(normal)),   normal.values,\n",
+    "               s=4, alpha=0.25, color=color, label='Normal')\n",
+    "    ax.scatter(range(len(outliers)), outliers.values,\n",
+    "               s=20, alpha=0.8, color=C[4], marker='x',\n",
+    "               label=f'Outlier {pct:.1f}%')\n",
+    "    ax.axhline(high, color=C[1], ls='--', lw=1.5, label=f'Lim sup {high:.2f}')\n",
+    "    ax.axhline(low,  color=C[3], ls='--', lw=1.5, label=f'Lim inf {low:.2f}')\n",
+    "    ax.set_title(feature, fontweight='bold')\n",
+    "    ax.legend(fontsize=7.5)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 11: Pairplot ───────────────────────────────────────────────────────
+md("## 10. Pairplot (relacion entre features por etiqueta)")
+code(
+    "# Ejecuta 3 pairplots (uno por etiqueta) — puede tardar ~30 seg\n",
+    "for label in LABELS:\n",
+    "    subset = df[FEATURES + [label]].copy()\n",
+    "    subset[label] = subset[label].map({0: 'Clase 0', 1: 'Clase 1'})\n",
+    "    g = sns.pairplot(subset, hue=label, diag_kind='kde',\n",
+    "                     plot_kws=dict(alpha=0.3, s=10, edgecolor='none'),\n",
+    "                     palette={'Clase 0': C[4], 'Clase 1': C[0]})\n",
+    "    g.figure.suptitle(f'Pairplot — {ALIAS[label]}',\n",
+    "                      y=1.01, color='white', fontsize=12)\n",
+    "    plt.show()",
+)
+
+# ─── Celda 12: Barras 100% ────────────────────────────────────────────────────
+md("## 11. Barras 100%: Distribucion de Categoria por Etiqueta")
+code(
+    "fig, axes = plt.subplots(1, 3, figsize=(16, 6))\n",
+    "fig.suptitle('% de Clase Positiva por Categoria', fontsize=14, fontweight='bold')\n",
+    "for ax, label in zip(axes, LABELS):\n",
+    "    tabla = pd.crosstab(df['categoria_nombre'], df[label], normalize='index') * 100\n",
+    "    tabla.columns = ['Clase 0 %', 'Clase 1 %']\n",
+    "    tabla = tabla.sort_values('Clase 1 %', ascending=True)\n",
+    "    tabla.plot(kind='barh', stacked=True, ax=ax,\n",
+    "               color=[C[4], C[0]], edgecolor=BG, width=0.7)\n",
+    "    ax.set_title(ALIAS[label], fontweight='bold', fontsize=10)\n",
+    "    ax.set_xlabel('% registros'); ax.set_xlim(0, 100)\n",
+    "    ax.legend(fontsize=8, loc='lower right')\n",
+    "    ax.tick_params(axis='y', labelsize=8)\n",
+    "plt.tight_layout()\n",
+    "plt.show()",
+)
+
+# ─── Celda 13: Estadisticas por clase ─────────────────────────────────────────
+md("## 12. Estadisticas Descriptivas por Clase")
+code(
+    "for label in LABELS:\n",
+    "    print(f'\\n=== {ALIAS[label]} ===')\n",
+    "    display(df.groupby(label)[FEATURES].agg(['mean','std','min','max']).round(3))",
+)
+
+# ─── Ensamblar y guardar ──────────────────────────────────────────────────────
+nb = {
+    "nbformat": 4, "nbformat_minor": 5,
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {"name": "python", "version": "3.10.0"}
+    },
+    "cells": cells
+}
+
+out = pathlib.Path(r"D:/Proyectos/BI/10clase/sistemas_de_recomendacion/eda_alquileres.ipynb")
+out.write_text(json.dumps(nb, ensure_ascii=False, indent=1), encoding="utf-8")
+print("Notebook guardado en:", out)
