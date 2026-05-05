@@ -76,7 +76,7 @@
         \small {\textbf{UNIVERSIDAD TÉCNICA DE AMBATO}} \\[0.1cm]
         \scriptsize \textit{FACULTAD DE INGENIERÍA EN SISTEMAS ELECTRÓNICA E INDUSTRIAL} \\[0.1cm]
         \scriptsize \textbf{CARRERA DE SOFTWARE} \\[0.1cm]
-        \scriptsize \textbf{CICLO ACADÉMICO: FEBRERO -- JULIO 2026}
+        \scriptsize \textbf{CICLO ACADÉMICO: FEBRERO -- JULIO 2026} \newline
     \end{minipage}%
     \hfill
     \begin{minipage}[c]{2.5cm}
@@ -89,16 +89,16 @@
 
 % ── Títulos de sección ────────────────────────────────────────────────────────
 \titleformat{\section}
-  {\large\bfseries\color{azulBI}}{\thesection}{1em}{}[\titlerule]
+  {\large\bfseries\color{black}}{\thesection}{1em}{}[\titlerule]
 \titleformat{\subsection}
-  {\normalsize\bfseries\color{azulBI!80}}{\thesubsection}{1em}{}
+  {\normalsize\bfseries\color{black!80}}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}
   {\normalsize\bfseries}{\thesubsubsection}{1em}{}
 
 % ── Cajas informativas ────────────────────────────────────────────────────────
 \tcbuselibrary{skins, breakable}
 \newtcolorbox{cajainfo}[1]{
-  colback=azulBI!5, colframe=azulBI,
+  colback=black!5, colframe=black,
   fonttitle=\bfseries\small, title=#1,
   breakable, left=6pt, right=6pt
 }
@@ -115,13 +115,13 @@
 \section{Portada}
 \begin{flushleft}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{@{} l l @{}}
-    \textbf{Tema:}                              & Preparaci\'on de Datos para Machine Learning -- Sistema de Alquileres \\
+\begin{tabular}{@{} l p{10cm} @{}}
+    \textbf{Tema:} & Preparaci\'on de Datos de Machine Learning -- \newline Sistema de Alquileres \\
     \textbf{Unidad de Organizaci\'on Curricular:} & Profesional. \\
-    \textbf{Nivel y Paralelo:}                  & 5to - A \\
-    \textbf{Alumnos participantes:}             & Toala Camacho Steeven Santiago. \\
-    \textbf{Asignatura:}                        & Inteligencia de Negocios \\
-    \textbf{Docente:}                           & Ing. Hern\'an Naranjo. \\
+    \textbf{Nivel y Paralelo:} & 6to - A \\
+    \textbf{Alumnos participantes:} & Toala Camacho Steeven Santiago. -- \newline Alexis Eduardo Lopez Guerrero. \\
+    \textbf{Asignatura:} & Inteligencia de Negocios \\
+    \textbf{Docente:} & Ing. Rub\'en Nogales. \\
 \end{tabular}
 \end{flushleft}
 
@@ -129,7 +129,7 @@
 \section{Introducci\'on}
 % =============================================================================
 
-El presente informe documenta la implementaci\'on del m\'odulo de preparaci\'on de
+El presente informe explica la implementaci\'on del m\'odulo de preparaci\'on de
 datos para Machine Learning dentro del proyecto de Sistema de Recomendaci\'on de
 Alquileres de Pel\'iculas, desarrollado en la materia de \textbf{Inteligencia
 de Negocios}.
