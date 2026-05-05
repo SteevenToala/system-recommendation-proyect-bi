@@ -103,20 +103,74 @@ def draw(ax, X, y, clf, H_id, gname):
             ax.plot([p[0] for p in pts], [p[1] for p in pts],
                     color="#2266CC", lw=1.6, zorder=3)
 
-        # Vector perpendicular desde el pie de la perpendicular del centroide
-        centroid = X.mean(axis=0)
-        f_pt = foot(centroid, w, b)
-        f_pt = np.clip(f_pt, 0.5, 9.5)
+        # Punto de inicio del vector: donde la recta cruza un eje de coordenadas
         wn = w / (np.linalg.norm(w) + 1e-12)
-        length = 1.4
+        centroid = X.mean(axis=0)
+        candidates = []
+        if abs(w[0]) > 1e-9:
+            xi = -b / w[0]          # interseccion con y=0 (eje x)
+            if -0.5 <= xi <= 10.5:
+                candidates.append(np.array([xi, 0.0]))
+        if abs(w[1]) > 1e-9:
+            yi = -b / w[1]          # interseccion con x=0 (eje y)
+            if -0.5 <= yi <= 10.5:
+                candidates.append(np.array([0.0, yi]))
+
+        if candidates:
+            # Elegir la interseccion mas cercana al centroide de los datos
+            start_pt = min(candidates, key=lambda p: np.linalg.norm(p - centroid))
+        else:
+            start_pt = np.clip(foot(centroid, w, b), 0.3, 9.7)
+
+        # Ajustar longitud para que la punta quede dentro del area visible
+        length = 1.5
+        for _ in range(40):
+            tip = start_pt + wn * length
+            if -0.5 <= tip[0] <= 10.5 and -0.5 <= tip[1] <= 10.5:
+                break
+            length *= 0.85
+        if length < 0.4:            # fallback si no entra
+            start_pt = np.clip(foot(centroid, w, b), 0.5, 9.0)
+            length = 1.2
+
+        tip = start_pt + wn * length
         ax.annotate("",
-            xy=(f_pt[0]+wn[0]*length, f_pt[1]+wn[1]*length),
-            xytext=(f_pt[0], f_pt[1]),
+            xy=(float(tip[0]), float(tip[1])),
+            xytext=(float(start_pt[0]), float(start_pt[1])),
             arrowprops=dict(arrowstyle="->", color="#1a7a1a",
                             lw=2.0, mutation_scale=14), zorder=5)
-        lx = float(np.clip(f_pt[0]+wn[0]*(length+0.3), 0.2, 9.2))
-        ly = float(np.clip(f_pt[1]+wn[1]*(length+0.3), 0.2, 9.2))
+        # Etiqueta "w" junto a la punta
+        lx = float(np.clip(tip[0] + wn[0]*0.3, -0.5, 10.5))
+        ly = float(np.clip(tip[1] + wn[1]*0.3, -0.5, 10.5))
         ax.text(lx, ly, "w", fontsize=9, color="#1a7a1a", fontweight="bold")
+
+        # Arco del angulo entre el eje x1 positivo y el vector normal w
+        ang_w = angle_deg(w)
+        if ang_w <= 180:
+            t1, t2   = 0.0, ang_w
+            ang_show = ang_w
+        else:
+            t1, t2   = ang_w - 360, 0.0
+            ang_show = 360 - ang_w
+
+        arc_r = 0.6
+        cx_a = float(start_pt[0]); cy_a = float(start_pt[1])
+
+        # Linea horizontal de referencia en el punto base (el "cero")
+        ax.plot([cx_a - 0.2, cx_a + arc_r + 0.2], [cy_a, cy_a],
+                color="gray", lw=1.0, ls="--", zorder=3, alpha=0.8)
+
+        # Arco amarillo entre la horizontal y el vector w
+        wedge = mpatches.Wedge((cx_a, cy_a), arc_r, t1, t2,
+                               facecolor="yellow", edgecolor="#996600",
+                               lw=0.8, alpha=0.65, zorder=4)
+        ax.add_patch(wedge)
+        mid_rad = np.radians((t1 + t2) / 2)
+        ax.text(cx_a + arc_r * 1.9 * np.cos(mid_rad),
+                cy_a + arc_r * 1.9 * np.sin(mid_rad),
+                "%.0f\u00b0" % ang_show,
+                fontsize=7.5, ha="center", va="center",
+                color="#664400", fontweight="bold")
 
     # Puntos
     offsets = [(0.25,0.25),(-1.4,0.25),(0.25,-0.55),(-1.4,-0.55),(0.3,0.25)]
@@ -138,6 +192,31 @@ def draw(ax, X, y, clf, H_id, gname):
     ax.legend(handles=leg, fontsize=7, loc="lower right", framealpha=0.9)
 
     return eq_str, ang_str, w_str
+
+# ── interpretacion del angulo del vector w ────────────────────────────────────
+def interpretar_angulo(ang_str):
+    """Devuelve texto explicando que indica el angulo del vector w."""
+    try:
+        ang = float(ang_str.replace(" grados", ""))
+    except ValueError:
+        return "direcci\'on no determinada."
+    if 0 <= ang < 90:
+        return ("El vector $\\mathbf{w}$ apunta hacia el "
+                "\\textbf{cuadrante superior-derecho} ($x_1$ positivo, $x_2$ positivo). "
+                "La clase~1 se encuentra en esa direcci\'on respecto a la frontera.")
+    elif ang < 180:
+        return ("El vector $\\mathbf{w}$ apunta hacia el "
+                "\\textbf{cuadrante superior-izquierdo} ($x_1$ negativo, $x_2$ positivo). "
+                "La clase~1 se encuentra a la izquierda y arriba de la frontera.")
+    elif ang < 270:
+        return ("El vector $\\mathbf{w}$ apunta hacia el "
+                "\\textbf{cuadrante inferior-izquierdo} ($x_1$ negativo, $x_2$ negativo). "
+                "La clase~1 se encuentra en la regi\'on inferior-izquierda.")
+    else:
+        return ("El vector $\\mathbf{w}$ apunta hacia el "
+                "\\textbf{cuadrante inferior-derecho} ($x_1$ positivo, $x_2$ negativo). "
+                "La clase~1 se encuentra en la regi\'on inferior-derecha.")
+
 
 # ── dibujo para hipotesis NO separables ───────────────────────────────────────
 def draw_no_sep(ax, X, y, H_id, gname):
@@ -374,12 +453,13 @@ with open(TEX, "w", encoding="utf-8") as f:
             else:
                 wl(f, r"  \item \textbf{Funci\'on separadora:} $" + h["eq"] + r"$")
                 wl(f, r"  \item \textbf{Vector normal:} $\mathbf{w} = " + h["w"] + r"$, perpendicular a la recta.")
-                wl(f, r"  \item \textbf{\'Angulo:} $\theta = " + h["ang"] + r"$, indicando la direcci\'on de la clase~1.")
+                wl(f, r"  \item \textbf{\'Angulo:} $\theta = " + h["ang"] + r"$.")
+                wl(f, r"  \item \textbf{Direcci\'on de $\mathbf{w}$:} " + interpretar_angulo(h["ang"]))
                 cls0 = [j+1 for j, v in enumerate(h["y"]) if v == 0]
                 cls1 = [j+1 for j, v in enumerate(h["y"]) if v == 1]
                 pts0 = ", ".join(["$X_{%d}$" % j for j in cls0])
                 pts1 = ", ".join(["$X_{%d}$" % j for j in cls1])
-                wl(f, r"  \item \textbf{Clase 0} (lado negativo de la recta): " + pts0)
+                wl(f, r"  \item \textbf{Clase 0} (lado negativo): " + pts0)
                 wl(f, r"  \item \textbf{Clase 1} (lado positivo, direcci\'on de $\mathbf{w}$): " + pts1)
             wl(f, r"\end{itemize}")
 
