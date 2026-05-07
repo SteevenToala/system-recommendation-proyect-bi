@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[letterpaper,top=2cm,bottom=5cm,left=3cm,right=3cm]{geometry}
-\usepackage{graphicx,booktabs,array,xcolor,amsmath,hyperref,amssymb}
+\usepackage{graphicx,booktabs,array,xcolor,amsmath,amssymb,hyperref}
 \usepackage{titlesec,fancyhdr,parskip,enumitem,tcolorbox}
 \usepackage{caption,float,subcaption,microtype,longtable}
 \tcbuselibrary{skins,breakable}
@@ -34,7 +34,7 @@
 \section{Portada}
 \begin{flushleft}\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{@{} l p{10cm} @{}}
-  \textbf{Tema:} & Clasificador Bayesiano para Toma de Decisiones en Alquileres \\
+  \textbf{Tema:} & Clasificador Bayesiano para Predicci\'on de Alquileres \\
   \textbf{Dataset:} & \texttt{alquileres\_etiquetados.csv} \\
   \textbf{Unidad de Organizaci\'on Curricular:} & Profesional. \\
   \textbf{Nivel y Paralelo:} & 6to -- A \\
@@ -45,29 +45,60 @@
 
 \section{Objetivos}
 \subsection*{Objetivo General}
-Diseñar e implementar un clasificador bayesiano robusto para la prediccion de ingresos altos en el negocio de alquileres.
+Desarrollar un modelo de clasificador bayesiano utilizando el dataset de alquileres de pel\'iculas para predecir cu\'ando un alquiler generar\'a ingresos altos.
 \subsection*{Objetivos Espec\'ificos}
 \begin{enumerate}[label=\arabic*.]
-  \item Aplicar la regla de decision optima $\psi_{opt}$ basada en probabilidades conjuntas.
-  \item Calcular el error out-of-sample $E_{out}$ para validar la precision del modelo.
-  \item Documentar el proceso matematico y estadistico de la clasificacion.
+  \item Identificar dos variables caracter\'isticas binarias que sirvan de pistas para predecir el ingreso.
+  \item Calcular las frecuencias y probabilidades conjuntas de forma clara y paso a paso.
+  \item Aplicar la regla de decisi\'on bayesiana ($\psi_{opt}$) para elegir la clase m\'as probable.
+  \item Determinar el error total del modelo sumando los casos en que la decisi\'on es incorrecta.
 \end{enumerate}
 
 \section{Introducci\'on}
-El clasificador bayesiano es un pilar de la inteligencia de negocios, permitiendo transformar datos historicos en reglas de clasificacion probabilisticas.En este informe se detalla la aplicacion de este modelo sobre un dataset de alquileres de peliculas.\begin{cajainfo}{Variables del Modelo}Se utilizan $x_1$ (Popularidad) y $x_2$ (Valor del Genero) para predecir la variable $y$ (Ingreso Alto).\end{cajainfo}
+En el mundo del an\'alisis de datos, el clasificador bayesiano es una herramienta muy \'util para realizar predicciones bas\'andose en observaciones pasadas. En este informe se detalla c\'omo se utiliz\'o este m\'etodo para predecir si un alquiler de una pel\'icula tendr\'a un \textbf{ingreso alto}.
 
-\section{Fundamento Te\'orico}
-Se emplea la regla de decision optima definida en clase para minimizar el error de clasificacion:
-\begin{equation}
-  \psi_{opt}(\mathbf{X}) = \begin{cases} 1, & \text{si } P(\mathbf{X}, y=1) \geq P(\mathbf{X}, y=0) \\ 0, & \text{Caso contrario} \end{cases}
-\end{equation}
-Asimismo, el error generalizado se calcula mediante la probabilidad de fallo sumada sobre todas las regiones de evidencia:
-\begin{equation}
-  E_{out}(\psi_{opt}) = \sum_{\{\mathbf{X}:\psi_{opt}(\mathbf{X})=1\}} P(y=0|\mathbf{X})P(\mathbf{X}) + \sum_{\{\mathbf{X}:\psi_{opt}(\mathbf{X})=0\}} P(y=1|\mathbf{X})P(\mathbf{X})
-\end{equation}
+Para lograrlo, el modelo necesita \"pistas\" (caracter\'isticas). Se seleccionaron las siguientes variables del dataset:
+\begin{itemize}
+  \item \textbf{Pista 1 ($x_1$)}: \texttt{pelicula\_popular}. Nos dice si la pel\'icula se alquila con frecuencia.
+  \item \textbf{Pista 2 ($x_2$)}: \texttt{genero\_alto\_valor}. Nos dice si el g\'enero de la pel\'icula suele ser costoso.
+  \item \textbf{Objetivo a predecir ($y$)}: \texttt{ingreso\_alto}. Indica si el alquiler final produjo un buen ingreso.
+\end{itemize}
 
-\section{Resultados y Tabla de Probabilidades}
-A continuacion se presenta la tabla con los resultados. Se ha ajustado el ancho para asegurar su correcta visualizacion dentro de los margenes.
+\section{Metodolog\'ia de C\'alculo (Explicaci\'on de la Tabla)}
+La tabla de resultados se construy\'o siguiendo un proceso matem\'atico sencillo y paso a paso. A continuaci\'on, se explica de manera comprensible c\'omo se calcul\'o cada columna:
+
+\begin{enumerate}[label=\arabic*.]
+  \item \textbf{Frecuencias (Freq $y=0$ y Freq $y=1$)}: 
+  Consiste en contar cu\'antas veces aparece cada combinaci\'on en el dataset. Por ejemplo, se cuenta cu\'antos alquileres no populares y de g\'enero barato ($x_1=0, x_2=0$) tuvieron un ingreso bajo ($y=0$) o alto ($y=1$).
+
+  \item \textbf{Frecuencia Total (Freq X)}: 
+  Es la suma simple de las frecuencias calculadas en el paso anterior:
+  \begin{equation} Freq(X) = Freq(y=0) + Freq(y=1) \end{equation}
+  \item \textbf{Probabilidad Conjunta ($P(X, y)$)}: 
+  Es el porcentaje que representa esa frecuencia en base a \textbf{todos los datos}. Se calcula dividiendo la frecuencia de cada caso para el n\'umero total de registros en el dataset ($N = 16044$).
+  \begin{equation} P(X, y) = \frac{Freq(X, y)}{N} \end{equation}
+  \item \textbf{Probabilidad Total de la Fila ($P(X)$)}: 
+  Indica qu\'e tan probable es ver esta combinaci\'on de pistas. Se suma la probabilidad conjunta del caso 0 y la del caso 1 de esa misma fila.
+  \begin{equation} P(X) = P(X, y=0) + P(X, y=1) \end{equation}
+  \item \textbf{Probabilidad Posterior ($P(y|X)$)}: 
+  Es el n\'ucleo del teorema de Bayes. Responde a la pregunta: \textit{Dado que vi estas pistas, ?`qu\'e probabilidad hay de que sea ingreso alto o bajo?}. Se calcula dividiendo la probabilidad conjunta para la probabilidad total de la fila.
+  \begin{equation} P(y|X) = \frac{P(X, y)}{P(X)} \end{equation}
+  \item \textbf{Regla de Decisi\'on ($\psi_{opt}$)}: 
+  El clasificador decide qu\'e clase ganar\'a observando cu\'al tiene el n\'umero m\'as grande en la probabilidad conjunta (o posterior). Si gana la clase 1, se coloca un $1$; caso contrario, se coloca un $0$.
+  \begin{equation} \psi_{opt}(X) = \begin{cases} 1, & \text{si } P(X, y=1) \geq P(X, y=0) \\ 0, & \text{Caso contrario} \end{cases} \end{equation}
+  \item \textbf{Error Individual de la Fila}: 
+  Cuando el clasificador elige una respuesta, siempre existe la probabilidad de equivocarse. El error es el valor de la probabilidad conjunta de \textbf{la clase perdedora}.
+\end{enumerate}
+
+\section{C\'alculo del Error Total ($E_{out}$)}
+Finalmente, el error total del modelo ($E_{out}$) se obtiene simplemente sumando todos los errores individuales de cada fila. En f\'ormula se ve as\'i:
+\begin{equation}
+  E_{out} = \sum_{\{\psi_{opt}=1\}} P(X, y=0) + \sum_{\{\psi_{opt}=0\}} P(X, y=1)
+\end{equation}
+En palabras simples: se suma la probabilidad de todas las veces en que el modelo dice ``es clase 1'' pero en realidad era 0, m\'as las veces que el modelo dice ``es clase 0'' pero en realidad era 1.
+
+\section{Resultados y Tabla Bayesiana}
+Aplicando los pasos mencionados a nuestros datos, se obtiene la siguiente tabla. Note que est\'a ajustada para verse claramente dentro de los m\'argenes:
 \begin{table}[H]\centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
@@ -78,13 +109,15 @@ $x_1$ & $x_2$ & Freq $y=0$ & Freq $y=1$ & Freq $X$ & $P(X,y=0)$ & $P(X,y=1)$ & $
 1 & 0 & 3521 & 2087 & 5608 & 0.2195 & 0.1301 & 0.3495 & 0.6279 & 0.3721 & 0 & 0.1301 \\ \hline
 1 & 1 & 1206 & 486 & 1692 & 0.0752 & 0.0303 & 0.1055 & 0.7128 & 0.2872 & 0 & 0.0303 \\ \hline
 \end{tabular}}
-\caption{Calculos del Clasificador Bayesiano y Error Generalizado}
+\caption{Resultados del clasificador bayesiano paso a paso.}
 \end{table}
+
+\textbf{Suma Total del Error ($E_{out}$):} \textbf{0.3710}
 
 \section{Conclusiones}
 \begin{enumerate}
-  \item El error $E_{out}$ es de \textbf{0.3710}, reflejando la complejidad del dataset.
-  \item La tabla ajustada permite un analisis claro de todas las metricas probabilisticas.
-  \item El diseño institucional se mantiene para garantizar la formalidad del informe.
+  \item Siguiendo paso a paso la construcci\'on de la tabla, se observa claramente c\'omo las frecuencias iniciales se transforman en probabilidades de decisi\'on.
+  \item En este modelo, la probabilidad general de que el ingreso sea bajo ($y=0$) es dominante en casi todos los escenarios, por eso la funci\'on $\psi_{opt}$ suele elegir 0.
+  \item El error total del 37.10\% ($0.3710$) sugiere que usar \'unicamente si la pel\'icula es popular y si el g\'enero es de alto valor no es suficiente para asegurar la rentabilidad total. Ser\'ia bueno probar m\'as variables en el futuro.
 \end{enumerate}
 \end{document}
