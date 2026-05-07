@@ -1,7 +1,7 @@
 """
-Generador de Clasificador Bayesiano (4 filas - 2 Features)
+Generador de Clasificador Bayesiano (Formato Academico UTA)
 Dataset: alquileres_etiquetados.csv
-Genera un informe LaTeX (.tex) y un notebook Jupyter (.ipynb).
+Genera un informe LaTeX profesional y un notebook Jupyter.
 """
 import os
 import pandas as pd
@@ -19,21 +19,18 @@ def generar():
         print(f"Error: No se encuentra el dataset en {CSV}")
         return
 
-    # 1. Carga
+    # 1. Carga y Analisis de Datos
     df = pd.read_csv(CSV)
-    
-    # Definimos x1, x2 y el target y del CSV
     f1 = 'pelicula_popular'
     f2 = 'genero_alto_valor'
     target = 'ingreso_alto'
     
-    # 2. Cálculo de la tabla Bayesiana
     total_n = len(df)
     p_y0_priori = len(df[df[target] == 0]) / total_n
     p_y1_priori = len(df[df[target] == 1]) / total_n
     
     results = []
-    # Combinaciones de x1, x2 (0,0 a 1,1) -> 4 filas
+    # Combinaciones x1, x2 (0,0 a 1,1) -> 4 filas
     for x1 in [0, 1]:
         for x2 in [0, 1]:
             sub_x = df[(df[f1] == x1) & (df[f2] == x2)]
@@ -73,38 +70,103 @@ def generar():
     
     res_df = pd.DataFrame(results)
     total_error = res_df['error_val'].sum()
-    
-    # 3. Generar Informe LaTeX
+
+    # 2. Generar Informe LaTeX (Formato Academico)
     with open(TEX, "w", encoding="utf-8") as f:
-        f.write(r"\documentclass[10pt,a4paper]{article}" + "\n")
+        # Preambulo
+        f.write(r"\documentclass[12pt,a4paper]{article}" + "\n")
         f.write(r"\usepackage[spanish]{babel}" + "\n")
         f.write(r"\usepackage[utf8]{inputenc}" + "\n")
-        f.write(r"\usepackage[margin=1.5cm]{geometry}" + "\n")
-        f.write(r"\usepackage{booktabs,array,xcolor,amsmath,longtable}" + "\n")
-        f.write(r"\usepackage{caption}" + "\n")
+        f.write(r"\usepackage[T1]{fontenc}" + "\n")
+        f.write(r"\usepackage[letterpaper,top=2cm,bottom=5cm,left=3cm,right=3cm]{geometry}" + "\n")
+        f.write(r"\usepackage{graphicx,booktabs,array,xcolor,amsmath,hyperref}" + "\n")
+        f.write(r"\usepackage{titlesec,fancyhdr,parskip,enumitem,tcolorbox}" + "\n")
+        f.write(r"\usepackage{caption,float,subcaption,microtype,longtable}" + "\n")
+        f.write(r"\tcbuselibrary{skins,breakable}" + "\n")
+        
+        # Estilos
+        f.write(r"\newtcolorbox{cajainfo}[1]{colback=black!5,colframe=black," + "\n")
+        f.write(r"  fonttitle=\bfseries\small,title=#1,breakable,left=6pt,right=6pt}" + "\n")
+        f.write(r"\pagestyle{fancy}\fancyhf{}" + "\n")
+        f.write(r"\setlength{\headheight}{70pt}\renewcommand{\headrulewidth}{0.4pt}" + "\n")
+        
+        # Encabezado UTA
+        f.write(r"\fancyhead[C]{%" + "\n")
+        f.write(r"  \begin{minipage}[c]{2.5cm}\centering" + "\n")
+        f.write(r"    \includegraphics[width=2.2cm]{imagenes/uta.png}" + "\n")
+        f.write(r"  \end{minipage}\hfill" + "\n")
+        f.write(r"  \begin{minipage}[c]{8cm}\centering" + "\n")
+        f.write(r"    \small{\textbf{UNIVERSIDAD T\'ECNICA DE AMBATO}}\\[0.1cm]" + "\n")
+        f.write(r"    \scriptsize\textit{FACULTAD DE INGENIER\'IA EN SISTEMAS ELECTR\'ONICA E INDUSTRIAL}\\[0.1cm]" + "\n")
+        f.write(r"    \scriptsize\textbf{CARRERA DE SOFTWARE}\\[0.1cm]" + "\n")
+        f.write(r"    \scriptsize\textbf{CICLO ACAD\'EMICO: FEBRERO -- JULIO 2026}" + "\n")
+        f.write(r"  \end{minipage}" + "\n")
+        f.write(r"  \hfill\begin{minipage}[c]{2.5cm}\centering" + "\n")
+        f.write(r"    \includegraphics[width=2.2cm]{imagenes/fisei.png}" + "\n")
+        f.write(r"  \end{minipage}" + "\n")
+        f.write(r"}" + "\n")
+        f.write(r"\fancyfoot[C]{\thepage}" + "\n")
+        f.write(r"\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule]" + "\n")
+        f.write(r"\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}" + "\n")
+        
+        # Inicio Documento
         f.write(r"\begin{document}" + "\n")
+        f.write(r"\begin{center}{\large\textbf{INFORME DE GU\'IA PR\'ACTICA}}\end{center}" + "\n\n")
         
-        f.write(r"\title{Informe de Clasificador Bayesiano (4 filas)}" + "\n")
-        f.write(r"\author{Inteligencia de Negocios}" + "\n")
-        f.write(r"\date{\today}" + "\n")
-        f.write(r"\maketitle" + "\n\n")
+        # Portada
+        f.write(r"\section{Portada}" + "\n")
+        f.write(r"\begin{flushleft}\renewcommand{\arraystretch}{1.3}" + "\n")
+        f.write(r"\begin{tabular}{@{} l p{10cm} @{}}" + "\n")
+        f.write(r"  \textbf{Tema:} & Desarrollo de un Clasificador Bayesiano para Inteligencia de Negocios \\" + "\n")
+        f.write(r"  \textbf{Dataset:} & \texttt{alquileres\_etiquetados.csv} \\" + "\n")
+        f.write(r"  \textbf{Unidad de Organizaci\'on Curricular:} & Profesional. \\" + "\n")
+        f.write(r"  \textbf{Nivel y Paralelo:} & 6to -- A \\" + "\n")
+        f.write(r"  \textbf{Alumnos:} & Toala Camacho Steeven Santiago. \\ & Alexis Eduardo Lopez Guerrero. \\" + "\n")
+        f.write(r"  \textbf{Asignatura:} & Inteligencia de Negocios \\" + "\n")
+        f.write(r"  \textbf{Docente:} & Ing. Rub\'en Nogales. \\" + "\n")
+        f.write(r"\end{tabular}\end{flushleft}" + "\n\n")
         
+        # Objetivos
+        f.write(r"\section{Objetivos}" + "\n")
+        f.write(r"\subsection*{Objetivo General}" + "\n")
+        f.write(r"Implementar un clasificador bayesiano utilizando el dataset de alquileres para calcular probabilidades posteriores y tomar decisiones optimas de clasificacion." + "\n")
+        f.write(r"\subsection*{Objetivos Espec\'ificos}" + "\n")
+        f.write(r"\begin{enumerate}[label=\arabic*.]" + "\n")
+        f.write(r"  \item Identificar caracteristicas binarias relevantes para el modelo." + "\n")
+        f.write(r"  \item Calcular las frecuencias de ocurrencia para cada combinacion de variables." + "\n")
+        f.write(r"  \item Determinar la clase optima basandose en la maxima probabilidad posterior." + "\n")
+        f.write(r"  \item Evaluar el error total de clasificacion del modelo bayesiano." + "\n")
+        f.write(r"\end{enumerate}" + "\n\n")
+        
+        # Introduccion
         f.write(r"\section{Introducci\'on}" + "\n")
-        f.write(f"Clasificador bayesiano para predecir \textbf{{{target}}} usando las etiquetas del CSV.\n")
-        f.write(r"\begin{itemize}" + "\n")
-        f.write(r"  \item \textbf{x1:} pelicula\_popular" + "\n")
-        f.write(r"  \item \textbf{x2:} genero\_alto\_valor" + "\n")
-        f.write(r"\end{itemize}" + "\n\n")
+        f.write(r"El teorema de Bayes es una herramienta fundamental en el aprendizaje supervisado.")
+        f.write(r"Permite calcular la probabilidad de que un evento pertenezca a una clase determinada")
+        f.write(r"dadas ciertas evidencias u observaciones. En este caso, analizamos el comportamiento")
+        f.write(r"de los clientes de alquiler de peliculas para predecir si generan un ingreso alto." + "\n\n")
         
+        f.write(r"\begin{cajainfo}{Variables Seleccionadas del Dataset}")
+        f.write(r"Para este estudio se han seleccionado las siguientes etiquetas binarias originales:")
+        f.write(r"\begin{itemize}")
+        f.write(r"  \item \textbf{x1:} \texttt{pelicula\_popular} (Indica alta demanda).")
+        f.write(r"  \item \textbf{x2:} \texttt{genero\_alto\_valor} (Indica generos premium).")
+        f.write(r"  \item \textbf{y:} \texttt{ingreso\_alto} (Variable objetivo a clasificar).")
+        f.write(r"\end{itemize}")
+        f.write(r"\end{cajainfo}" + "\n\n")
+        
+        # Probabilidades Prioris
         f.write(r"\section{Probabilidades Prioris}" + "\n")
+        f.write(r"Las probabilidades prioris representan el conocimiento previo sobre la clase objetivo en el dataset total." + "\n")
         f.write(r"\begin{itemize}" + "\n")
-        f.write(f"  \\item $P(y=0) = {p_y0_priori:.4f}$" + "\n")
-        f.write(f"  \\item $P(y=1) = {p_y1_priori:.4f}$" + "\n")
+        f.write(f"  \\item $P(y=0) = {p_y0_priori:.4f}$ (Ingreso Bajo)" + "\n")
+        f.write(f"  \\item $P(y=1) = {p_y1_priori:.4f}$ (Ingreso Alto)" + "\n")
         f.write(r"\end{itemize}" + "\n\n")
         
+        # Tabla Bayesiana
         f.write(r"\section{Tabla de Probabilidades Bayesianas}" + "\n")
+        f.write(r"A continuacion se detalla la tabla con las frecuencias observadas y los calculos probabilisticos para cada combinacion de caracteristicas." + "\n")
         f.write(r"\begin{center}\footnotesize" + "\n")
-        cols = r"|c|c|c|c|c|c|c|c|c|c|c|c|c|"
+        cols = r"|c|c|c|c|c|c|c|c|c|c|c|c|"
         f.write(r"\begin{longtable}{" + cols + r"}" + "\n")
         f.write(r"\hline" + "\n")
         f.write(r"$x_1$ & $x_2$ & Freq $y=0$ & Freq $y=1$ & Freq $X$ & $P(X,y=0)$ & $P(X,y=1)$ & $P(X)$ & $P(y=0|X)$ & $P(y=1|X)$ & $C_{opt}$ & Error \\ \hline" + "\n")
@@ -120,30 +182,38 @@ def generar():
         f.write(r"\end{longtable}" + "\n")
         f.write(r"\end{center}" + "\n\n")
         
-        f.write(r"\section{Conclusi\'on}" + "\n")
-        f.write(f"El error total de clasificaci\'on es de \\textbf{{{total_error:.4f}}}. " + "\n")
+        # Conclusiones
+        f.write(r"\section{Conclusiones}" + "\n")
+        f.write(r"\begin{enumerate}" + "\n")
+        f.write(r"  \item El error total del modelo es de \textbf{" + f"{total_error:.4f}" + r"}, lo cual indica que las variables actuales tienen limitaciones predictivas." + "\n")
+        f.write(r"  \item La clase dominante en todas las combinaciones es la clase 0 (Ingreso Bajo)." + "\n")
+        f.write(r"  \item El teorema de Bayes permite cuantificar la incertidumbre en la toma de decisiones empresariales." + "\n")
+        f.write(r"  \item Para mejorar la precision, se recomienda incluir mas caracteristicas o aumentar la granularidad de los datos." + "\n")
+        f.write(r"\end{enumerate}" + "\n\n")
+        
         f.write(r"\end{document}" + "\n")
 
-    # 4. Generar Jupyter Notebook
+    # 3. Generar Jupyter Notebook
+    # ... (Misma logica del notebook pero con 4 filas)
     notebook = {
         "cells": [
-            {"cell_type": "markdown", "metadata": {}, "source": ["# Clasificador Bayesiano (4 filas)\n", "Usando `pelicula_popular` y `genero_alto_valor` para predecir `ingreso_alto`."]},
+            {"cell_type": "markdown", "metadata": {}, "source": ["# Clasificador Bayesiano (UTA Format)\n", "Analisis de `alquileres_etiquetados.csv`."]},
             {"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [], "source": [
                 "import pandas as pd\n",
                 "df = pd.read_csv('../src/modules/alquileres_etiquetados.csv')\n",
                 "f1, f2, target = 'pelicula_popular', 'genero_alto_valor', 'ingreso_alto'\n",
                 "total = len(df)\n",
-                "results = []\n",
-                "for x1 in [0, 1]:\n",
-                "    for x2 in [0, 1]:\n",
+                "res = []\n",
+                "for x1 in [0,1]:\n",
+                "    for x2 in [0,1]:\n",
                 "        sub = df[(df[f1]==x1) & (df[f2]==x2)]\n",
                 "        c = len(sub)\n",
                 "        if c > 0:\n",
                 "            y1 = len(sub[sub[target]==1]); y0 = c - y1\n",
                 "            p_y1_x = y1/c; p_y0_x = y0/c; c_opt = 1 if p_y1_x > p_y0_x else 0\n",
                 "            err = (p_y0_x if c_opt==1 else p_y1_x) * (c/total)\n",
-                "            results.append({'x1':x1, 'x2':x2, 'FreqTotal':c, 'P(y=1|X)':p_y1_x, 'ClassOpt':c_opt, 'Error':err})\n",
-                "pd.DataFrame(results)"
+                "            res.append({'x1':x1, 'x2':x2, 'Count':c, 'P(y=1|X)':p_y1_x, 'Class_Opt':c_opt, 'Error_Contrib':err})\n",
+                "pd.DataFrame(res)"
             ]}
         ],
         "metadata": {"kernelspec": {"display_name": "Python 3", "name": "python3"}},
@@ -151,7 +221,8 @@ def generar():
     }
     with open(IPYNB, "w", encoding="utf-8") as f:
         json.dump(notebook, f, indent=2)
-    print("Archivos actualizados (4 filas).")
+
+    print("\nInforme Academico y Notebook generados exitosamente.")
 
 if __name__ == "__main__":
     generar()
