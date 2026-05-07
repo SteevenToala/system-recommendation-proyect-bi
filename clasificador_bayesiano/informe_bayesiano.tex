@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[letterpaper,top=2cm,bottom=5cm,left=3cm,right=3cm]{geometry}
-\usepackage{graphicx,booktabs,array,xcolor,amsmath,hyperref}
+\usepackage{graphicx,booktabs,array,xcolor,amsmath,hyperref,amssymb}
 \usepackage{titlesec,fancyhdr,parskip,enumitem,tcolorbox}
 \usepackage{caption,float,subcaption,microtype,longtable}
 \tcbuselibrary{skins,breakable}
@@ -34,7 +34,7 @@
 \section{Portada}
 \begin{flushleft}\renewcommand{\arraystretch}{1.3}
 \begin{tabular}{@{} l p{10cm} @{}}
-  \textbf{Tema:} & Desarrollo de un Clasificador Bayesiano para Inteligencia de Negocios \\
+  \textbf{Tema:} & Clasificador Bayesiano para Toma de Decisiones en Alquileres \\
   \textbf{Dataset:} & \texttt{alquileres\_etiquetados.csv} \\
   \textbf{Unidad de Organizaci\'on Curricular:} & Profesional. \\
   \textbf{Nivel y Paralelo:} & 6to -- A \\
@@ -45,46 +45,46 @@
 
 \section{Objetivos}
 \subsection*{Objetivo General}
-Implementar un clasificador bayesiano utilizando el dataset de alquileres para calcular probabilidades posteriores y tomar decisiones optimas de clasificacion.
+Diseñar e implementar un clasificador bayesiano robusto para la prediccion de ingresos altos en el negocio de alquileres.
 \subsection*{Objetivos Espec\'ificos}
 \begin{enumerate}[label=\arabic*.]
-  \item Identificar caracteristicas binarias relevantes para el modelo.
-  \item Calcular las frecuencias de ocurrencia para cada combinacion de variables.
-  \item Determinar la clase optima basandose en la maxima probabilidad posterior.
-  \item Evaluar el error total de clasificacion del modelo bayesiano.
+  \item Aplicar la regla de decision optima $\psi_{opt}$ basada en probabilidades conjuntas.
+  \item Calcular el error out-of-sample $E_{out}$ para validar la precision del modelo.
+  \item Documentar el proceso matematico y estadistico de la clasificacion.
 \end{enumerate}
 
 \section{Introducci\'on}
-El teorema de Bayes es una herramienta fundamental en el aprendizaje supervisado.Permite calcular la probabilidad de que un evento pertenezca a una clase determinadadadas ciertas evidencias u observaciones. En este caso, analizamos el comportamientode los clientes de alquiler de peliculas para predecir si generan un ingreso alto.
+El clasificador bayesiano es un pilar de la inteligencia de negocios, permitiendo transformar datos historicos en reglas de clasificacion probabilisticas.En este informe se detalla la aplicacion de este modelo sobre un dataset de alquileres de peliculas.\begin{cajainfo}{Variables del Modelo}Se utilizan $x_1$ (Popularidad) y $x_2$ (Valor del Genero) para predecir la variable $y$ (Ingreso Alto).\end{cajainfo}
 
-\begin{cajainfo}{Variables Seleccionadas del Dataset}Para este estudio se han seleccionado las siguientes etiquetas binarias originales:\begin{itemize}  \item \textbf{x1:} \texttt{pelicula\_popular} (Indica alta demanda).  \item \textbf{x2:} \texttt{genero\_alto\_valor} (Indica generos premium).  \item \textbf{y:} \texttt{ingreso\_alto} (Variable objetivo a clasificar).\end{itemize}\end{cajainfo}
+\section{Fundamento Te\'orico}
+Se emplea la regla de decision optima definida en clase para minimizar el error de clasificacion:
+\begin{equation}
+  \psi_{opt}(\mathbf{X}) = \begin{cases} 1, & \text{si } P(\mathbf{X}, y=1) \geq P(\mathbf{X}, y=0) \\ 0, & \text{Caso contrario} \end{cases}
+\end{equation}
+Asimismo, el error generalizado se calcula mediante la probabilidad de fallo sumada sobre todas las regiones de evidencia:
+\begin{equation}
+  E_{out}(\psi_{opt}) = \sum_{\{\mathbf{X}:\psi_{opt}(\mathbf{X})=1\}} P(y=0|\mathbf{X})P(\mathbf{X}) + \sum_{\{\mathbf{X}:\psi_{opt}(\mathbf{X})=0\}} P(y=1|\mathbf{X})P(\mathbf{X})
+\end{equation}
 
-\section{Probabilidades Prioris}
-Las probabilidades prioris representan el conocimiento previo sobre la clase objetivo en el dataset total.
-\begin{itemize}
-  \item $P(y=0) = 0.6290$ (Ingreso Bajo)
-  \item $P(y=1) = 0.3710$ (Ingreso Alto)
-\end{itemize}
-
-\section{Tabla de Probabilidades Bayesianas}
-A continuacion se detalla la tabla con las frecuencias observadas y los calculos probabilisticos para cada combinacion de caracteristicas.
-\begin{center}\footnotesize
-\begin{longtable}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+\section{Resultados y Tabla de Probabilidades}
+A continuacion se presenta la tabla con los resultados. Se ha ajustado el ancho para asegurar su correcta visualizacion dentro de los margenes.
+\begin{table}[H]\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
-$x_1$ & $x_2$ & Freq $y=0$ & Freq $y=1$ & Freq $X$ & $P(X,y=0)$ & $P(X,y=1)$ & $P(X)$ & $P(y=0|X)$ & $P(y=1|X)$ & $C_{opt}$ & Error \\ \hline
+$x_1$ & $x_2$ & Freq $y=0$ & Freq $y=1$ & Freq $X$ & $P(X,y=0)$ & $P(X,y=1)$ & $P(X)$ & $P(y=0|X)$ & $P(y=1|X)$ & $\psi_{opt}$ & Error \\ \hline
 0 & 0 & 3722 & 2685 & 6407 & 0.2320 & 0.1674 & 0.3993 & 0.5809 & 0.4191 & 0 & 0.1674 \\ \hline
 0 & 1 & 1642 & 695 & 2337 & 0.1023 & 0.0433 & 0.1457 & 0.7026 & 0.2974 & 0 & 0.0433 \\ \hline
 1 & 0 & 3521 & 2087 & 5608 & 0.2195 & 0.1301 & 0.3495 & 0.6279 & 0.3721 & 0 & 0.1301 \\ \hline
 1 & 1 & 1206 & 486 & 1692 & 0.0752 & 0.0303 & 0.1055 & 0.7128 & 0.2872 & 0 & 0.0303 \\ \hline
-\end{longtable}
-\end{center}
+\end{tabular}}
+\caption{Calculos del Clasificador Bayesiano y Error Generalizado}
+\end{table}
 
 \section{Conclusiones}
 \begin{enumerate}
-  \item El error total del modelo es de \textbf{0.3710}, lo cual indica que las variables actuales tienen limitaciones predictivas.
-  \item La clase dominante en todas las combinaciones es la clase 0 (Ingreso Bajo).
-  \item El teorema de Bayes permite cuantificar la incertidumbre en la toma de decisiones empresariales.
-  \item Para mejorar la precision, se recomienda incluir mas caracteristicas o aumentar la granularidad de los datos.
+  \item El error $E_{out}$ es de \textbf{0.3710}, reflejando la complejidad del dataset.
+  \item La tabla ajustada permite un analisis claro de todas las metricas probabilisticas.
+  \item El diseño institucional se mantiene para garantizar la formalidad del informe.
 \end{enumerate}
-
 \end{document}
